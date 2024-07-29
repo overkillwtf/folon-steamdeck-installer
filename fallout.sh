@@ -3,9 +3,14 @@
 echo "Fallout London Patcher by Timo Schmidt and Overkill.wtf"
 sleep 1
 
-# Run the initial command to setup NonSteamLaunchers
-echo "Setting up NonSteamLaunchers..."
-/bin/bash -c 'curl -Ls https://raw.githubusercontent.com/moraroy/NonSteamLaunchers-On-Steam-Deck/main/NonSteamLaunchers.sh | nohup /bin/bash -s -- "GOG Galaxy"'
+# Check if NonSteamLaunchers is already installed
+NONSTEAM_LAUNCHERS_DIR="$HOME/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program Files (x86)/GOG Galaxy/"
+if [ -d "$NONSTEAM_LAUNCHERS_DIR" ]; then
+    echo "NonSteamLaunchers is already installed."
+else
+    echo "Setting up NonSteamLaunchers..."
+    /bin/bash -c 'curl -Ls https://raw.githubusercontent.com/moraroy/NonSteamLaunchers-On-Steam-Deck/main/NonSteamLaunchers.sh | nohup /bin/bash -s -- "GOG Galaxy"'
+fi
 
 # Create necessary directories
 echo "Creating necessary directories..."
