@@ -82,9 +82,12 @@ fi
 
 # Step 1: Move main game files
 echo "Step 1: Moving main game files..."
-mv -f "$HOME/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program Files (x86)/GOG Galaxy/Games/Fallout London"/* "$HOME/.steam/steam/steamapps/common/Fallout 4/"
-rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program Files (x86)/GOG Galaxy/Games/Fallout London/__config"
-rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program Files (x86)/GOG Galaxy/Games/Fallout London/__appdata"
+if [ -d "$HOME/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program Files (x86)/GOG Galaxy/Games/Fallout London" ]; then
+    rsync -a --ignore-existing "$HOME/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program Files (x86)/GOG Galaxy/Games/Fallout London/"* "$HOME/.steam/steam/steamapps/common/Fallout 4/"
+    rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program Files (x86)/GOG Galaxy/Games/Fallout London"
+else
+    echo "Directory for main game files not found."
+fi
 
 # Step 2: Move _config files
 echo "Step 2: Moving _config files..."
