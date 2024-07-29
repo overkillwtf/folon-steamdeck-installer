@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "Fallout London Patcher by Timo Schmidt and overkill.wtf"
+echo "Fallout London Patcher by Timo Schmidt and Overkill.wtf"
 sleep 1
 
 # Run the initial command to setup NonSteamLaunchers
@@ -45,12 +45,9 @@ sleep 1
 # Prompt user for Steam login credentials
 echo "Please enter your Steam login credentials."
 echo "Note: Your login details are secure and will NOT be stored."
-#read -p "Steam Username: " username
-#read -s -p "Steam Password: " password
 
-read -r username <<< $(zenity --entry --title="Steam Username" --text="Enter name of your Steam user:")
-
-read -r password <<< "$(zenity --password --title="Steam Password" --text="Enter you user steam user password to install required depencies" 2>/dev/null)"
+username=$(zenity --entry --title="Steam Username" --text="Enter name of your Steam user:")
+password=$(zenity --password --title="Steam Password" --text="Enter your Steam user password to install required dependencies" 2>/dev/null)
 
 # Run SteamCMD with the provided credentials and script
 echo "Running SteamCMD with provided credentials..."
@@ -64,6 +61,12 @@ rm -rf "$HOME/Downloads/SteamCMD"
 rm "$HOME/Downloads/folon_downgrade.txt"
 
 echo "Patch process completed successfully!"
+
+# Check for Fallout: London installation
+while [ ! -d "/home/deck/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program Files (x86)/GOG Galaxy/Games/Fallout London" ]; do
+  echo "Please download Fallout: London from GOG and install it. Then press Enter to continue."
+  read -p ""
+done
 
 # Step 1: Move main game files
 echo "Step 1: Moving main game files..."
