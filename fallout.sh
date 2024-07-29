@@ -3,6 +3,10 @@
 echo "Fallout London Patcher by Timo Schmidt and Overkill.wtf"
 sleep 1
 
+# Set appmanifest_377160.acf to read-only
+echo "Setting appmanifest_377160.acf to read-only to stop Steam from updating Fallout 4..."
+chmod 444 "$HOME/.local/share/Steam/steamapps/appmanifest_377160.acf"
+
 # Check if NonSteamLaunchers is already installed
 NONSTEAM_LAUNCHERS_DIR="$HOME/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program Files (x86)/GOG Galaxy/"
 if [ -e "$NONSTEAM_LAUNCHERS_DIR" ]; then
