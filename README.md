@@ -8,6 +8,8 @@ This automates as much as possible to set up [Fallout London](https://fallout4lo
 
 The only prerequisite is having Fallout 4 GOTY in **English** installed on your __**internal SSD**__.
 
+Note: Right now, this script applies [the optimized .ini](https://github.com/krupar101/f4london_steam_deck_ini) by @krupar101
+
 ## Steps
 
 1. **Open a Terminal on your Steam Deck.**
