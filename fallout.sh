@@ -65,7 +65,7 @@ chmod +x "$HOME/Downloads/SteamCMD/steamcmd.sh"
 
 # Move downloaded content and clean up
 echo "Moving downloaded content and cleaning up..."
-mv -f "$HOME/Downloads/SteamCMD/linux32/steamapps/content/app_377160"/* "$HOME/Downloads/Depots/"
+rsync -a "$HOME/Downloads/SteamCMD/linux32/steamapps/content/app_377160/"* "$HOME/Downloads/Depots/"
 rm -rf "$HOME/Downloads/SteamCMD"
 rm "$HOME/Downloads/folon_downgrade.txt"
 
