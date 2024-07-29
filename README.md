@@ -19,4 +19,4 @@ This script performs the following actions:
 
 ## Passwords
 
-While this tool asks for your password, it does not keep them locally. Instead, it uses SteamCMD, a command-line version of Steam provided by Valve.
+While this tool asks for your password, it does not keep them locally. Instead, it uses [SteamCMD](https://developer.valvesoftware.com/wiki/SteamCMD), a command-line version of Steam provided by Valve.
