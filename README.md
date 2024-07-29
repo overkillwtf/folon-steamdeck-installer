@@ -20,8 +20,11 @@ Note: Right now, this script applies [the optimized .ini](https://github.com/kru
 
 1. **Open a Terminal on your Steam Deck.**
 2. **Download, Make Executable, and Run the Script:**
+
 ```
-curl -O https://raw.githubusercontent.com/overkillwtf/folon-steamdeck-installer/main/fallout.sh && chmod +x fallout.sh && ./fallout.sh
+curl -O https://raw.githubusercontent.com/overkillwtf/folon-steamdeck-installer/main/fallout.sh && \
+chmod +x fallout.sh && \
+./fallout.sh
 ```
 
 3. Before the downgrade starts, SteamCMD (a tool developed by Valve) will authenticate with the previously provided credentials, and might possibly need a 2FA / Steam Guard confirmation. None of your credentials will be stored in any form.
