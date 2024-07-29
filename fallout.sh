@@ -4,7 +4,7 @@ echo "Fallout London Patcher by Timo Schmidt and Overkill.wtf"
 sleep 1
 
 # Check if NonSteamLaunchers is already installed
-NONSTEAM_LAUNCHERS_DIR="$HOME/.local/steam/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program Files (x86)/GOG Galaxy/"
+NONSTEAM_LAUNCHERS_DIR="$HOME/.local/share/steam/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program Files (x86)/GOG Galaxy/"
 if [ -d "$NONSTEAM_LAUNCHERS_DIR" ]; then
     echo "NonSteamLaunchers is already installed."
 else
