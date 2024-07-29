@@ -64,7 +64,7 @@ echo "Patch process completed successfully!"
 
 # Check for Fallout: London installation
 if [ ! -d "$HOME/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program Files (x86)/GOG Galaxy/Games/Fallout London" ]; then
-  text="`printf "<b>Please download Fallout: London from GOG and install it!</b>\n\nThen click OK to continue"`"
+  text="`printf "<b>Please download Fallout: London from GOG and install it!</b>\n\nThen click OK to continue. (You can find GOG in your Steam Library.)"`"
    zenity --info \
            --title="Overkill" \
            --width="450" \
