@@ -20,7 +20,9 @@ Run the following command in the terminal:
 curl -O https://raw.githubusercontent.com/overkillwtf/folon-steamdeck-installer/main/fallout.sh && chmod +x fallout.sh && ./fallout.sh
 ```
 
-3. Once the downgrade is about to happen, SteamCMD will authenticate with the previously provided credentials, which possibly need a 2FA / Steam Guard confirmation. None of your credentials nor account token will be stored in any form and will be deleted immediately after the script is finished.
+3. Before the downgrade starts, SteamCMD (a tool developed by Valve) will authenticate with the previously provided credentials, and might possibly need a 2FA / Steam Guard confirmation. 
+
+None of your credentials will be stored in any form.
 
 ## About the Script
 
