@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "Fallout London Patcher by Timo Schmidt and Overkill.wtf"
+echo "Fallout London Patcher by Timo Schmidt and Kevin Wammer for overkill.wtf"
 sleep 1
 
 # Set appmanifest_377160.acf to read-only
