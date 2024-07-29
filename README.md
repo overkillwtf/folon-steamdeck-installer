@@ -1,4 +1,7 @@
 # Fallout London Steam Deck Installer
+
+![](https://github.com/overkillwtf/folon-steamdeck-installer/blob/main/folondeck.gif)
+
 ## Context
 
 This script is meant to automate as much as possible to set up [Fallout London](https://fallout4london.com) on your Steam Deck.
