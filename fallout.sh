@@ -56,41 +56,49 @@ chmod +x "$HOME/Downloads/SteamCMD/steamcmd.sh"
 
 # Move downloaded content and clean up
 echo "Moving downloaded content and cleaning up..."
-mv $HOME/Downloads/SteamCMD/linux32/steamapps/content/app_377160/* "$HOME/Downloads/Depots/"
+mv "$HOME/Downloads/SteamCMD/linux32/steamapps/content/app_377160"/* "$HOME/Downloads/Depots/"
 rm -rf "$HOME/Downloads/SteamCMD"
 rm "$HOME/Downloads/folon_downgrade.txt"
 
 echo "Patch process completed successfully!"
 
 # Check for Fallout: London installation
-while [ ! -d "/home/deck/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program Files (x86)/GOG Galaxy/Games/Fallout London" ]; do
-  echo "Please download Fallout: London from GOG and install it. Then press Enter to continue."
-  read -p ""
-done
+if [ ! -d "$HOME/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program Files (x86)/GOG Galaxy/Games/Fallout London" ]; then
+  text="`printf "<b>Please download Fallout: London from GOG and install it!</b>\n\nThen click OK to continue"`"
+   zenity --info \
+           --title="Overkill" \
+           --width="450" \
+           --text="${text}" 2>/dev/null
+fi
 
 # Step 1: Move main game files
 echo "Step 1: Moving main game files..."
-mv /home/deck/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program\ Files\ \(x86\)/GOG\ Galaxy/Games/Fallout\ London/* /home/deck/.steam/steam/steamapps/common/Fallout\ 4/
-rm -rf /home/deck/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program\ Files\ \(x86\)/GOG\ Galaxy/Games/Fallout\ London/_config
-rm -rf /home/deck/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program\ Files\ \(x86\)/GOG\ Galaxy/Games/Fallout\ London/_appdata
+mv "$HOME/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program Files (x86)/GOG Galaxy/Games/Fallout London"/* "$HOME/.steam/steam/steamapps/common/Fallout 4/"
+rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program Files (x86)/GOG Galaxy/Games/Fallout London/_config"
+rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program Files (x86/GOG Galaxy/Games/Fallout London/_appdata"
 
 # Step 2: Move _config files
 echo "Step 2: Moving _config files..."
-mkdir -p /home/deck/.local/share/Steam/steamapps/compatdata/377160/pfx/drive_c/users/steamuser/Documents/My\ Games/Fallout4
-mv /home/deck/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program\ Files\ \(x86\)/GOG\ Galaxy/Games/Fallout\ London/_config/* /home/deck/.local/share/Steam/steamapps/compatdata/377160/pfx/drive_c/users/steamuser/Documents/My\ Games/Fallout4/
+mkdir -p "$HOME/.local/share/Steam/steamapps/compatdata/377160/pfx/drive_c/users/steamuser/Documents/My Games/Fallout4"
+mv "$HOME/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program Files (x86/GOG Galaxy/Games/Fallout London/_config/"* "$HOME/.local/share/Steam/steamapps/compatdata/377160/pfx/drive_c/users/steamuser/Documents/My Games/Fallout4/"
 
 # Step 3: Move _appdata files
 echo "Step 3: Moving _appdata files..."
-mkdir -p /home/deck/.local/share/Steam/steamapps/compatdata/377160/pfx/drive_c/users/steamuser/AppData/Local/Fallout4
-mv /home/deck/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program\ Files\ \(x86\)/GOG\ Galaxy/Games/Fallout\ London/_appdata/* /home/deck/.local/share/Steam/steamapps/compatdata/377160/pfx/drive_c/users/steamuser/AppData/Local/Fallout4/
+mkdir -p "$HOME/.local/share/Steam/steamapps/compatdata/377160/pfx/drive_c/users/steamuser/AppData/Local/Fallout4"
+mv "$HOME/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program Files (x86/GOG Galaxy/Games/Fallout London/_appdata"/* "$HOME/.local/share/Steam/steamapps/compatdata/377160/pfx/drive_c/users/steamuser/AppData/Local/Fallout4/"
 
 # Step 4: Download and place Fallout4.INI
 echo "Step 4: Downloading and placing Fallout4.INI..."
-curl -L -o /home/deck/.local/share/Steam/steamapps/compatdata/377160/pfx/drive_c/users/steamuser/Documents/My\ Games/Fallout4/Fallout4.INI https://github.com/krupar101/f4london_steam_deck_ini/blob/main/Fallout4.INI
+curl -L -o "$HOME/.local/share/Steam/steamapps/compatdata/377160/pfx/drive_c/users/steamuser/Documents/My Games/Fallout4/Fallout4.INI" https://github.com/krupar101/f4london_steam_deck_ini/blob/main/Fallout4.INI
 
 # Step 5: Rename executables
 echo "Step 5: Renaming executables..."
-mv /home/deck/.steam/steam/steamapps/common/Fallout\ 4/Fallout4Launcher.exe /home/deck/.steam/steam/steamapps/common/Fallout\ 4/F04LauncherBackup.exe
-mv /home/deck/.steam/steam/steamapps/common/Fallout\ 4/f4se_loader.exe /home/deck/.steam/steam/steamapps/common/Fallout\ 4/Fallout4Launcher.exe
+mv "$HOME/.steam/steam/steamapps/common/Fallout 4/Fallout4Launcher.exe" "$HOME/.steam/steam/steamapps/common/Fallout 4/F04LauncherBackup.exe"
+mv "$HOME/.steam/steam/steamapps/common/Fallout 4/f4se_loader.exe" "$HOME/.steam/steam/steamapps/common/Fallout 4/Fallout4Launcher.exe"
 
-echo "All steps completed successfully!"
+text="`printf "<b>All steps completed successfully!</b>\n\nYou can now close this screen"`"
+zenity --info \
+       --title="Overkill" \
+       --width="450" \
+       --text="${text}" 2>/dev/null
+exit
