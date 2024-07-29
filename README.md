@@ -10,9 +10,9 @@ The only prerequisite is having Fallout 4 GOTY in **English** installed on your 
 
 This script performs the following actions:
 
--	Downgrades the Steam version of Fallout 4 to a working version.
--	Installs GOG, so that you can install Fallout: London
--	Automatically moves the necessary files to the correct path.
+-	Downgrades the Steam version of Fallout 4 to the right version (pre-NextGen).
+-	Installs GOG, so that you can then download Fallout: London
+-	Automatically moves the necessary files to the correct paths.
 
 Note: Right now, this script applies [the optimized .ini](https://github.com/krupar101/f4london_steam_deck_ini) by @krupar101
 
