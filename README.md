@@ -4,15 +4,15 @@
 
 ## About the Script
 
-This automates as much as possible to set up [Fallout London](https://fallout4london.com) on your Steam Deck.
+This automates as many steps as possible to set up [Fallout London](https://fallout4london.com) on your Steam Deck.
 
-The only prerequisite is having Fallout 4 GOTY in **English** installed on your __**internal SSD**__.
+The only prerequisite is installing Fallout 4 GOTY in **English** on your __**internal SSD**__.
 
 This script performs the following actions:
 
--	Downgrades the Steam version of Fallout 4 to the right version (pre-NextGen).
--	Installs GOG through [NonSteamLaunchers](https://github.com/moraroy/NonSteamLaunchers-On-Steam-Deck) by @moraroy
--	Automatically moves the necessary files to the correct paths.
+- Downgrades the Steam version of Fallout 4 to the right version (pre-NextGen).
+- Installs GOG through [NonSteamLaunchers](https://github.com/moraroy/NonSteamLaunchers-On-Steam-Deck) by @moraroy.
+- Automatically moves the necessary files to the correct paths.
 
 Note: Right now, this script applies [the optimized .ini](https://github.com/krupar101/f4london_steam_deck_ini) by @krupar101
 
@@ -20,17 +20,13 @@ Note: Right now, this script applies [the optimized .ini](https://github.com/kru
 
 1. **Open a Terminal on your Steam Deck.**
 2. **Download, Make Executable, and Run the Script:**
-
-Run the following command in the terminal:
 ```
 curl -O https://raw.githubusercontent.com/overkillwtf/folon-steamdeck-installer/main/fallout.sh && chmod +x fallout.sh && ./fallout.sh
 ```
 
-3. Before the downgrade starts, SteamCMD (a tool developed by Valve) will authenticate with the previously provided credentials, and might possibly need a 2FA / Steam Guard confirmation. 
+3. Before the downgrade starts, SteamCMD (a tool developed by Valve) will authenticate with the previously provided credentials, and might possibly need a 2FA / Steam Guard confirmation. None of your credentials will be stored in any form.
 
-None of your credentials will be stored in any form.
-
-4. The script will pause at one moment and ask you to download FOLON through the newly installed GOG. Don't close the script! Proceed once GOG has downloaded the mod completely by going back to the Konsole window and pressing a button.
+4. The script will pause at one moment and ask you to download FOLON through the newly installed GOG (you can find GOG in your Steam Library). Don't close the script! Proceed once GOG has downloaded the mod completely by going back to the Konsole window and pressing a button.
 
 ## Password Disclaimer:
 
