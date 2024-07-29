@@ -1,4 +1,10 @@
 # Fallout London Steam Deck Installer
+## Context
+
+This script is meant to automate as much as possible to set up [Fallout London](https://fallout4london.com) on your Steam Deck.
+
+The only prerequisite is having Fallout 4 GOTY in **English** installed on your __**internal SSD**__.
+
 ## Steps
 
 1. **Open a Terminal on your Steam Deck.**
