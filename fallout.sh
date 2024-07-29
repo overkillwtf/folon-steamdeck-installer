@@ -5,12 +5,13 @@ sleep 1
 
 # Check if NonSteamLaunchers is already installed
 NONSTEAM_LAUNCHERS_DIR="$HOME/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program Files (x86)/GOG Galaxy/"
-if [ -d "$NONSTEAM_LAUNCHERS_DIR" ]; then
+if [ -L "$NONSTEAM_LAUNCHERS_DIR" ] || [ -d "$NONSTEAM_LAUNCHERS_DIR" ]; then
     echo "NonSteamLaunchers is already installed."
 else
     echo "Setting up NonSteamLaunchers..."
     /bin/bash -c 'curl -Ls https://raw.githubusercontent.com/moraroy/NonSteamLaunchers-On-Steam-Deck/main/NonSteamLaunchers.sh | nohup /bin/bash -s -- "GOG Galaxy"'
 fi
+
 
 # Create necessary directories
 echo "Creating necessary directories..."
