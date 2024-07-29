@@ -1,10 +1,10 @@
 #!/bin/bash
 
-echo "Fallout London Patcher by Timo Schmidt and Kevin Wammer for overkill.wtf"
+echo "Fallout London Patcher by Timo Schmidt and Overkill.wtf"
 sleep 1
 
 # Set appmanifest_377160.acf to read-only
-echo "Setting appmanifest_377160.acf to read-only to stop Steam from updating Fallout 4..."
+echo "Setting appmanifest_377160.acf to read-only to stop Steam from updating the game..."
 chmod 444 "$HOME/.local/share/Steam/steamapps/appmanifest_377160.acf"
 
 # Check if NonSteamLaunchers is already installed
@@ -83,8 +83,7 @@ fi
 # Step 1: Move main game files
 echo "Step 1: Moving main game files..."
 if [ -d "$HOME/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program Files (x86)/GOG Galaxy/Games/Fallout London" ]; then
-    rsync -a --ignore-existing "$HOME/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program Files (x86)/GOG Galaxy/Games/Fallout London/"* "$HOME/.steam/steam/steamapps/common/Fallout 4/"
-    rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program Files (x86)/GOG Galaxy/Games/Fallout London"
+    rsync -a "$HOME/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program Files (x86)/GOG Galaxy/Games/Fallout London/"* "$HOME/.steam/steam/steamapps/common/Fallout 4/"
 else
     echo "Directory for main game files not found."
 fi
@@ -92,21 +91,37 @@ fi
 # Step 2: Move _config files
 echo "Step 2: Moving _config files..."
 mkdir -p "$HOME/.local/share/Steam/steamapps/compatdata/377160/pfx/drive_c/users/steamuser/Documents/My Games/Fallout4"
-mv -f "$HOME/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program Files (x86)/GOG Galaxy/Games/Fallout London/__config/"* "$HOME/.local/share/Steam/steamapps/compatdata/377160/pfx/drive_c/users/steamuser/Documents/My Games/Fallout4/"
+if [ -d "$HOME/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program Files (x86)/GOG Galaxy/Games/Fallout London/__Config" ]; then
+    rsync -a "$HOME/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program Files (x86)/GOG Galaxy/Games/Fallout London/__Config/"* "$HOME/.local/share/Steam/steamapps/compatdata/377160/pfx/drive_c/users/steamuser/Documents/My Games/Fallout4/"
+else
+    echo "__Config directory not found."
+fi
 
 # Step 3: Move _appdata files
 echo "Step 3: Moving _appdata files..."
 mkdir -p "$HOME/.local/share/Steam/steamapps/compatdata/377160/pfx/drive_c/users/steamuser/AppData/Local/Fallout4"
-mv -f "$HOME/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program Files (x86)/GOG Galaxy/Games/Fallout London/__appdata"/* "$HOME/.local/share/Steam/steamapps/compatdata/377160/pfx/drive_c/users/steamuser/AppData/Local/Fallout4/"
+if [ -d "$HOME/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program Files (x86)/GOG Galaxy/Games/Fallout London/__AppData" ]; then
+    rsync -a "$HOME/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program Files (x86)/GOG Galaxy/Games/Fallout London/__AppData/"* "$HOME/.local/share/Steam/steamapps/compatdata/377160/pfx/drive_c/users/steamuser/AppData/Local/Fallout4/"
+else
+    echo "__AppData directory not found."
+fi
 
 # Step 4: Download and place Fallout4.INI
 echo "Step 4: Downloading and placing Fallout4.INI..."
 curl -L -o "$HOME/.local/share/Steam/steamapps/compatdata/377160/pfx/drive_c/users/steamuser/Documents/My Games/Fallout4/Fallout4.INI" https://github.com/krupar101/f4london_steam_deck_ini/blob/main/Fallout4.INI
 
-# Step 5: Rename executables
+# Step 5: Renaming executables
 echo "Step 5: Renaming executables..."
-mv -f "$HOME/.steam/steam/steamapps/common/Fallout 4/Fallout4Launcher.exe" "$HOME/.steam/steam/steamapps/common/Fallout 4/F04LauncherBackup.exe"
-mv -f "$HOME/.steam/steam/steamapps/common/Fallout 4/f4se_loader.exe" "$HOME/.steam/steam/steamapps/common/Fallout 4/Fallout4Launcher.exe"
+if [ -e "$HOME/.steam/steam/steamapps/common/Fallout 4/f4se_loader.exe" ]; then
+    mv -f "$HOME/.steam/steam/steamapps/common/Fallout 4/Fallout4Launcher.exe" "$HOME/.steam/steam/steamapps/common/Fallout 4/F04LauncherBackup.exe"
+    mv -f "$HOME/.steam/steam/steamapps/common/Fallout 4/f4se_loader.exe" "$HOME/.steam/steam/steamapps/common/Fallout 4/Fallout4Launcher.exe"
+else
+    echo "f4se_loader.exe not found."
+fi
+
+# Cleanup: Remove Fallout London directory
+echo "Cleaning up..."
+rm -rf "$HOME/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program Files (x86)/GOG Galaxy/Games/Fallout London"
 
 text="`printf "<b>All steps completed successfully!</b>\n\nYou can now close the terminal / Konsole."`"
 zenity --info \
