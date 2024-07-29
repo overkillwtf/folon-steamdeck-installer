@@ -2,11 +2,17 @@
 
 ![](https://github.com/overkillwtf/folon-steamdeck-installer/blob/main/folondeck.gif)
 
-## Context
+## About the Script
 
 This automates as much as possible to set up [Fallout London](https://fallout4london.com) on your Steam Deck.
 
 The only prerequisite is having Fallout 4 GOTY in **English** installed on your __**internal SSD**__.
+
+This script performs the following actions:
+
+-	Downgrades the Steam version of Fallout 4 to a working version.
+-	Installs GOG, so that you can install Fallout: London
+-	Automatically moves the necessary files to the correct path.
 
 Note: Right now, this script applies [the optimized .ini](https://github.com/krupar101/f4london_steam_deck_ini) by @krupar101
 
@@ -24,14 +30,6 @@ curl -O https://raw.githubusercontent.com/overkillwtf/folon-steamdeck-installer/
 
 None of your credentials will be stored in any form.
 
-## About the Script
+## Password Disclaimer:
 
-This script performs the following actions:
-
--	Downgrades the Steam version of Fallout 4 to a working version.
--	Installs GOG, so that you can install Fallout: London
--	Automatically moves the necessary files to the correct path.
-
-## Passwords
-
-While this tool asks for your password, it does not keep them locally. Instead, it uses [SteamCMD](https://developer.valvesoftware.com/wiki/SteamCMD), a command-line version of Steam provided by Valve.
+While this tool asks for your Steam credentials, it does not keep them locally, nor does it send them to any third party outside of Valve. Instead, it uses [SteamCMD](https://developer.valvesoftware.com/wiki/SteamCMD), a command-line version of Steam provided by Valve.
