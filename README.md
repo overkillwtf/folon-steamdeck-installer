@@ -30,6 +30,8 @@ curl -O https://raw.githubusercontent.com/overkillwtf/folon-steamdeck-installer/
 
 None of your credentials will be stored in any form.
 
+4. The script will pause at one moment and ask you to download FOLON through the newly installed GOG. Don't close the script! Proceed once GOG has downloaded the mod completely by going back to the Konsole window and pressing a button.
+
 ## Password Disclaimer:
 
 While this tool asks for your Steam credentials, it does not keep them locally, nor does it send them to any third party outside of Valve. Instead, it uses [SteamCMD](https://developer.valvesoftware.com/wiki/SteamCMD), a command-line version of Steam provided by Valve.
