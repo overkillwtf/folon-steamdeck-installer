@@ -6,7 +6,6 @@ sleep 1
 # Paths
 STEAM_APPMANIFEST_PATH="$HOME/.local/share/Steam/steamapps/appmanifest_377160.acf"
 NONSTEAM_LAUNCHERS_DIR="$HOME/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program Files (x86)/GOG Galaxy/"
-DOWNLOADS_DEPOTS_DIR="$HOME/Downloads/Depots"
 DOWNGRADE_LIST_PATH="$HOME/Downloads/folon_downgrade.txt"
 STEAMCMD_DIR="$HOME/Downloads/SteamCMD"
 FALLOUT_LONDON_DIR="$HOME/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program Files (x86)/GOG Galaxy/Games/Fallout London"
@@ -26,10 +25,6 @@ else
     echo "Setting up NonSteamLaunchers..."
     /bin/bash -c 'curl -Ls https://raw.githubusercontent.com/moraroy/NonSteamLaunchers-On-Steam-Deck/main/NonSteamLaunchers.sh | nohup /bin/bash -s -- "GOG Galaxy"'
 fi
-
-# Create necessary directories
-echo "Creating necessary directories..."
-mkdir -p "$DOWNLOADS_DEPOTS_DIR"
 
 # Setting up downgrade-list
 echo "Setting up downgrade-list..."
@@ -75,7 +70,7 @@ chmod +x "$STEAMCMD_DIR/steamcmd.sh"
 
 # Move downloaded content and clean up
 echo "Moving downloaded content and cleaning up..."
-rsync -av "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/"* "$DOWNLOADS_DEPOTS_DIR/"
+rsync -av --remove-source-files "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/"*/ "$FALLOUT_4_DIR/"
 rm -rf "$STEAMCMD_DIR"
 rm "$DOWNGRADE_LIST_PATH"
 
