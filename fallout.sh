@@ -118,7 +118,7 @@ if [ "$LAST_STEP" -lt 6 ]; then
 fi
 
 # Step 6: Check for Fallout: London installation
-if [ "$LAST_STEP" -lt 7]; then
+if [ "$LAST_STEP" -lt 7 ]; then
     if [ ! -d "$FALLOUT_LONDON_DIR" ]; then
       text="<b>Please download Fallout: London from GOG and install it!</b>\n\nThen click OK to continue. (You can find GOG in your Steam Library.)"
       zenity --info \
