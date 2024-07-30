@@ -71,8 +71,17 @@ chmod +x "$STEAMCMD_DIR/steamcmd.sh"
 # Move downloaded content and clean up
 echo "Moving downloaded content and cleaning up..."
 rsync -av --remove-source-files "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/"*/ "$FALLOUT_4_DIR/"
-rm -rf "$STEAMCMD_DIR"
-rm "$DOWNGRADE_LIST_PATH"
+
+# Check if there are any files left in the subfolders
+if find "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/" -type f | read; then
+    echo "Error: One or more files need to be moved manually."
+    echo "File(s) still present:"
+    find "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/" -type f
+    exit 1
+else
+    rm -rf "$STEAMCMD_DIR"
+    rm "$DOWNGRADE_LIST_PATH"
+fi
 
 echo "Patch process completed successfully!"
 
