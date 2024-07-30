@@ -222,14 +222,14 @@ if [ "$LAST_STEP" -lt 12 ]; then
 fi
 
 # Step 12: Cleanup: Remove Fallout London directory
-if [ "$LAST_STEP" -lt 13]; then
+if [ "$LAST_STEP" -lt 13 ]; then
     echo "Cleaning up..."
     rm -rf "$FALLOUT_LONDON_DIR"
     update_progress 13
 fi
 
 # Step 13: Cleanup: Remove all files starting with cc in the Data folder
-if [ "$LAST_STEP" -lt 14]; then
+if [ "$LAST_STEP" -lt 14 ]; then
     echo "Removing files starting with 'cc' in the Data folder..."
     rm -f "$FALLOUT_4_DIR/Data/cc*"
     update_progress 14
