@@ -107,28 +107,11 @@ if [ "$LAST_STEP" -lt 6 ]; then
         echo "File(s) still present:"
         find "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/" -type f
         zenity --info --title="Manual Intervention Required" --width="450" --text="Please move the remaining files manually from '$STEAMCMD_DIR/linux32/steamapps/content/app_377160/' to '$FALLOUT_4_DIR'.\n\nClick OK when you have finished moving the files to continue." 2>/dev/null
-        rm -rf "$STEAMCMD_DIR"
-        rm "$DOWNGRADE_LIST_PATH"
-        update_progress 6
     else
         rm -rf "$STEAMCMD_DIR"
         rm "$DOWNGRADE_LIST_PATH"
-        update_progress 6
     fi
-fi
-
-echo "Patch process completed successfully!"
-
-# Step 6: Check for Fallout: London installation
-if [ "$LAST_STEP" -lt 7 ]; then
-    if [ ! -d "$FALLOUT_LONDON_DIR" ]; then
-      text="<b>Please download Fallout: London from GOG and install it!</b>\n\nThen click OK to continue. (You can find GOG in your Steam Library.)"
-      zenity --info \
-             --title="Overkill" \
-             --width="450" \
-             --text="$text" 2>/dev/null
-    fi
-    update_progress 7
+    update_progress 6
 fi
 
 # Step 7: Move main game files (excluding __Config and __AppData)
@@ -164,10 +147,8 @@ if [ "$LAST_STEP" -lt 9 ]; then
             echo "File(s) still present:"
             find "$FALLOUT_LONDON_DIR/__Config" -type f
             zenity --info --title="Manual Intervention Required" --width="450" --text="Please move the remaining files manually from '$FALLOUT_LONDON_DIR/__Config' to '$FALLOUT4_CONFIG_DIR'.\n\nClick OK when you have finished moving the files to continue." 2>/dev/null
-            update_progress 9
-        else
-            update_progress 9
         fi
+        update_progress 9
     else
         echo "__Config directory not found."
         update_progress 9
@@ -187,16 +168,13 @@ if [ "$LAST_STEP" -lt 10 ]; then
             echo "File(s) still present:"
             find "$FALLOUT_LONDON_DIR/__AppData" -type f
             zenity --info --title="Manual Intervention Required" --width="450" --text="Please move the remaining files manually from '$FALLOUT_LONDON_DIR/__AppData' to '$FALLOUT4_APPDATA_DIR'.\n\nClick OK when you have finished moving the files to continue." 2>/dev/null
-            update_progress 10
-        else
-            update_progress 10
         fi
+        update_progress 10
     else
         echo "__AppData directory not found."
         update_progress 10
     fi
 fi
-
 # Step 10: Download and place Fallout4.INI
 if [ "$LAST_STEP" -lt 11 ]; then
     echo "Step 10: Downloading and placing Fallout4.INI..."
