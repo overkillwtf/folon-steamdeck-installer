@@ -113,7 +113,7 @@ fi
 
 # Step 4: Download and place Fallout4.INI
 echo "Step 4: Downloading and placing Fallout4.INI..."
-curl -L -o "$FALLOUT4_CONFIG_DIR/Fallout4.INI" "$F4LONDON_INI_URL"
+curl -L -o "$FALLOUT4_CONFIG_DIR/Fallout4.ini" "$F4LONDON_INI_URL"
 
 # Step 5: Renaming executables
 echo "Step 5: Renaming executables..."
