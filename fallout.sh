@@ -114,6 +114,14 @@ if [ "$LAST_STEP" -lt 6 ]; then
     update_progress 6
 fi
 
+# Step 6: Remove SteamCMD directory and downgrade list
+if [ "$LAST_STEP" -lt 7 ]; then
+    echo "Cleaning up SteamCMD directory and downgrade list..."
+    rm -rf "$STEAMCMD_DIR"
+    rm "$DOWNGRADE_LIST_PATH"
+    update_progress 7
+fi
+
 # Step 7: Move main game files (excluding __Config and __AppData)
 if [ "$LAST_STEP" -lt 8 ]; then
     echo "Step 7: Moving main game files..."
