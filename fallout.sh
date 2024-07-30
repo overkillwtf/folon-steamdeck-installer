@@ -88,7 +88,7 @@ fi
 # Step 1: Move main game files
 echo "Step 1: Moving main game files..."
 if [ -d "$FALLOUT_LONDON_DIR" ]; then
-    rsync -av "$FALLOUT_LONDON_DIR/"* "$FALLOUT_4_DIR/"
+    rsync -av "$FALLOUT_LONDON_DIR/" "$FALLOUT_4_DIR/"
 else
     echo "Directory for main game files not found."
 fi
