@@ -128,6 +128,10 @@ fi
 echo "Cleaning up..."
 rm -rf "$FALLOUT_LONDON_DIR"
 
+# Cleanup: Remove all files starting with cc in the Data folder
+echo "Removing files starting with 'cc' in the Data folder..."
+rm -f "$FALLOUT_4_DIR/Data/cc*"
+
 text="<b>All steps completed successfully!</b>\n\nYou can now close the terminal / Konsole."
 zenity --info \
        --title="Overkill" \
