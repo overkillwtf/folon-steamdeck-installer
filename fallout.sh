@@ -117,7 +117,7 @@ curl -L -o "$FALLOUT4_CONFIG_DIR/Fallout4.INI" "$F4LONDON_INI_URL"
 
 # Step 5: Renaming executables
 echo "Step 5: Renaming executables..."
-if [ -d "$FALLOUT_4_DIR/f4se_loader.exe" ]; then
+if [ -f "$FALLOUT_4_DIR/f4se_loader.exe" ]; then
     mv -f "$FALLOUT_4_DIR/Fallout4Launcher.exe" "$FALLOUT_4_DIR/F04LauncherBackup.exe"
     mv -f "$FALLOUT_4_DIR/f4se_loader.exe" "$FALLOUT_4_DIR/Fallout4Launcher.exe"
 else
