@@ -106,12 +106,15 @@ if [ "$LAST_STEP" -lt 6 ]; then
         echo "Error: One or more files need to be moved manually."
         echo "File(s) still present:"
         find "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/" -type f
-        exit 1
+        zenity --info --title="Manual Intervention Required" --width="450" --text="Please move the remaining files manually from '$STEAMCMD_DIR/linux32/steamapps/content/app_377160/' to '$FALLOUT_4_DIR'.\n\nClick OK when you have finished moving the files to continue." 2>/dev/null
+        rm -rf "$STEAMCMD_DIR"
+        rm "$DOWNGRADE_LIST_PATH"
+        update_progress 6
     else
         rm -rf "$STEAMCMD_DIR"
         rm "$DOWNGRADE_LIST_PATH"
+        update_progress 6
     fi
-    update_progress 6
 fi
 
 echo "Patch process completed successfully!"
