@@ -109,7 +109,7 @@ if [ "$LAST_STEP" -lt 6 ]; then
         echo "Error: One or more files need to be moved manually."
         echo "File(s) still present:"
         find "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/" -type f
-        zenity --info --title="Manual Intervention Required" --width="450" --text="Please move the remaining files manually from '$STEAMCMD_DIR/linux32/steamapps/content/app_377160/' to '$FALLOUT_4_DIR' However, do not move folders starting with "depot_". Move their content. Normally it should only be one file, called Fallout4 - Meshes.ba2 that has to go into /Data/.\n\nClick OK when you have finished moving the files to continue." 2>/dev/null
+        zenity --info --title="Manual Intervention Required" --width="450" --text="Please move the remaining files manually from '$STEAMCMD_DIR/linux32/steamapps/content/app_377160/' to '$FALLOUT_4_DIR'. However, do not move folders starting with 'depot_'. Move their content. Normally it should only be one file, called Fallout4 - Meshes.ba2 that has to go into /Data/.\n\nClick OK when you have finished moving the files to continue." 2>/dev/null
     else
         rm -rf "$STEAMCMD_DIR"
         rm "$DOWNGRADE_LIST_PATH"
@@ -117,11 +117,15 @@ if [ "$LAST_STEP" -lt 6 ]; then
     update_progress 6
 fi
 
-# Step 6: Remove SteamCMD directory and downgrade list
-if [ "$LAST_STEP" -lt 7 ]; then
-    echo "Cleaning up SteamCMD directory and downgrade list..."
-    rm -rf "$STEAMCMD_DIR"
-    rm "$DOWNGRADE_LIST_PATH"
+# Step 6: Check for Fallout: London installation
+if [ "$LAST_STEP" -lt 7]; then
+    if [ ! -d "$FALLOUT_LONDON_DIR" ]; then
+      text="<b>Please download Fallout: London from GOG and install it!</b>\n\nThen click OK to continue. (You can find GOG in your Steam Library.)"
+      zenity --info \
+             --title="Overkill" \
+             --width="450" \
+             --text="$text" 2>/dev/null
+    fi
     update_progress 7
 fi
 
@@ -144,7 +148,6 @@ if [ "$LAST_STEP" -lt 8 ]; then
         update_progress 8
     fi
 fi
-
 # Step 8: Move _config files
 if [ "$LAST_STEP" -lt 9 ]; then
     echo "Step 8: Moving _config files..."
@@ -152,6 +155,9 @@ if [ "$LAST_STEP" -lt 9 ]; then
     if [ -d "$FALLOUT_LONDON_DIR/__Config" ]; then
         rsync -av --remove-source-files "$FALLOUT_LONDON_DIR/__Config/"* "$FALLOUT4_CONFIG_DIR/"
         
+        # Remove empty directories
+        find "$FALLOUT_LONDON_DIR/__Config" -type d -empty -delete
+
         # Check if there are any files left in the subfolders
         if find "$FALLOUT_LONDON_DIR/__Config" -type f | read; then
             echo "Error: One or more files need to be moved manually."
@@ -173,6 +179,9 @@ if [ "$LAST_STEP" -lt 10 ]; then
     if [ -d "$FALLOUT_LONDON_DIR/__AppData" ]; then
         rsync -av --remove-source-files "$FALLOUT_LONDON_DIR/__AppData/"* "$FALLOUT4_APPDATA_DIR/"
         
+        # Remove empty directories
+        find "$FALLOUT_LONDON_DIR/__AppData" -type d -empty -delete
+
         # Check if there are any files left in the subfolders
         if find "$FALLOUT_LONDON_DIR/__AppData" -type f | read; then
             echo "Error: One or more files need to be moved manually."
@@ -186,6 +195,7 @@ if [ "$LAST_STEP" -lt 10 ]; then
         update_progress 10
     fi
 fi
+
 # Step 10: Download and place Fallout4.INI
 if [ "$LAST_STEP" -lt 11 ]; then
     echo "Step 10: Downloading and placing Fallout4.INI..."
@@ -206,14 +216,14 @@ if [ "$LAST_STEP" -lt 12 ]; then
 fi
 
 # Step 12: Cleanup: Remove Fallout London directory
-if [ "$LAST_STEP" -lt 13 ]; then
+if [ "$LAST_STEP" -lt 13]; then
     echo "Cleaning up..."
     rm -rf "$FALLOUT_LONDON_DIR"
     update_progress 13
 fi
 
 # Step 13: Cleanup: Remove all files starting with cc in the Data folder
-if [ "$LAST_STEP" -lt 14 ]; then
+if [ "$LAST_STEP" -lt 14]; then
     echo "Removing files starting with 'cc' in the Data folder..."
     rm -f "$FALLOUT_4_DIR/Data/cc*"
     update_progress 14
