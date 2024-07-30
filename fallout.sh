@@ -12,7 +12,7 @@ FALLOUT_LONDON_DIR="$HOME/.local/share/Steam/steamapps/compatdata/NonSteamLaunch
 FALLOUT_4_DIR="$HOME/.steam/steam/steamapps/common/Fallout 4"
 FALLOUT4_CONFIG_DIR="$HOME/.local/share/Steam/steamapps/compatdata/377160/pfx/drive_c/users/steamuser/Documents/My Games/Fallout4"
 FALLOUT4_APPDATA_DIR="$HOME/.local/share/Steam/steamapps/compatdata/377160/pfx/drive_c/users/steamuser/AppData/Local/Fallout4"
-F4LONDON_INI_URL="https://github.com/krupar101/f4london_steam_deck_ini/blob/main/Fallout4.INI"
+F4LONDON_INI_URL="https://raw.githubusercontent.com/krupar101/f4london_steam_deck_ini/main/Fallout4.INI"
 
 # Set appmanifest_377160.acf to read-only
 echo "Setting appmanifest_377160.acf to read-only to stop Steam from updating the game..."
