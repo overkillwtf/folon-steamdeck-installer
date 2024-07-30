@@ -101,12 +101,15 @@ if [ "$LAST_STEP" -lt 6 ]; then
     echo "Moving downloaded content and cleaning up..."
     rsync -av --remove-source-files "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/"*/ "$FALLOUT_4_DIR/"
 
+    # Remove empty directories
+    find "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/" -type d -empty -delete
+
     # Check if there are any files left in the subfolders
     if find "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/" -type f | read; then
         echo "Error: One or more files need to be moved manually."
         echo "File(s) still present:"
         find "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/" -type f
-        zenity --info --title="Manual Intervention Required" --width="450" --text="Please move the remaining files manually from '$STEAMCMD_DIR/linux32/steamapps/content/app_377160/' to '$FALLOUT_4_DIR'.\n\nClick OK when you have finished moving the files to continue." 2>/dev/null
+        zenity --info --title="Manual Intervention Required" --width="450" --text="Please move the remaining files manually from '$STEAMCMD_DIR/linux32/steamapps/content/app_377160/' to '$FALLOUT_4_DIR' However, do not move folders starting with "depot_". Move their content. Normally it should only be one file, called Fallout4 - Meshes.ba2 that has to go into /Data/.\n\nClick OK when you have finished moving the files to continue." 2>/dev/null
     else
         rm -rf "$STEAMCMD_DIR"
         rm "$DOWNGRADE_LIST_PATH"
@@ -128,11 +131,11 @@ if [ "$LAST_STEP" -lt 8 ]; then
     if [ -d "$FALLOUT_LONDON_DIR" ]; then
         rsync -av --remove-source-files --exclude="__Config" --exclude="__AppData" "$FALLOUT_LONDON_DIR/" "$FALLOUT_4_DIR/"
         
-        # Check if there are any files left in the subfolders
-        if find "$FALLOUT_LONDON_DIR/" -mindepth 1 -type f | read; then
+        # Check if there are any files left in the subfolders, excluding __Config and __AppData
+        if find "$FALLOUT_LONDON_DIR/" -mindepth 1 ! -path "$FALLOUT_LONDON_DIR/__Config/*" ! -path "$FALLOUT_LONDON_DIR/__AppData/*" -type f | read; then
             echo "Error: One or more files need to be moved manually."
             echo "File(s) still present:"
-            find "$FALLOUT_LONDON_DIR/" -mindepth 1 -type f
+            find "$FALLOUT_LONDON_DIR/" -mindepth 1 ! -path "$FALLOUT_LONDON_DIR/__Config/*" ! -path "$FALLOUT_LONDON_DIR/__AppData/*" -type f
             zenity --info --title="Manual Intervention Required" --width="450" --text="Please move the remaining files manually from '$FALLOUT_LONDON_DIR' to '$FALLOUT_4_DIR'.\n\nClick OK when you have finished moving the files to continue." 2>/dev/null
         fi
         update_progress 8
