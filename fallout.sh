@@ -172,7 +172,7 @@ if [ "$LAST_STEP" -lt 9 ]; then
     fi
 fi
 
-# Step 9: Move _appdata files
+# Step 9: Move _appdata files and modify Fallout4Prefs.ini
 if [ "$LAST_STEP" -lt 10 ]; then
     echo "Step 9: Moving _appdata files..."
     mkdir -p "$FALLOUT4_APPDATA_DIR"
@@ -189,6 +189,12 @@ if [ "$LAST_STEP" -lt 10 ]; then
             find "$FALLOUT_LONDON_DIR/__AppData" -type f
             zenity --info --title="Manual Intervention Required" --width="450" --text="Please move the remaining files manually from '$FALLOUT_LONDON_DIR/__AppData' to '$FALLOUT4_APPDATA_DIR'.\n\nClick OK when you have finished moving the files to continue." 2>/dev/null
         fi
+
+        # Modify Fallout4Prefs.ini
+        echo "Modifying Fallout4Prefs.ini..."
+        sed -i 's/^iSize H=.*$/iSize H=800/' "$FALLOUT4_CONFIG_DIR/Fallout4Prefs.ini"
+        sed -i 's/^iSize W=.*$/iSize W=1280/' "$FALLOUT4_CONFIG_DIR/Fallout4Prefs.ini"
+        
         update_progress 10
     else
         echo "__AppData directory not found."
