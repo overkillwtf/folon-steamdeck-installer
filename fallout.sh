@@ -76,7 +76,7 @@ chmod +x "$STEAMCMD_DIR/steamcmd.sh"
 
 # Move downloaded content and clean up
 echo "Moving downloaded content and cleaning up..."
-rsync -a "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/"* "$DOWNLOADS_DEPOTS_DIR/"
+rsync -av "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/"* "$DOWNLOADS_DEPOTS_DIR/"
 rm -rf "$STEAMCMD_DIR"
 rm "$DOWNGRADE_LIST_PATH"
 
@@ -94,7 +94,7 @@ fi
 # Step 1: Move main game files
 echo "Step 1: Moving main game files..."
 if [ -e "$FALLOUT_LONDON_DIR" ]; then
-    rsync -a "$FALLOUT_LONDON_DIR/"* "$FALLOUT_4_DIR/"
+    rsync -av "$FALLOUT_LONDON_DIR/"* "$FALLOUT_4_DIR/"
 else
     echo "Directory for main game files not found."
 fi
@@ -103,7 +103,7 @@ fi
 echo "Step 2: Moving _config files..."
 mkdir -p "$FALLOUT4_CONFIG_DIR"
 if [ -e "$FALLOUT_LONDON_DIR/__Config" ]; then
-    rsync -a "$FALLOUT_LONDON_DIR/__Config/"* "$FALLOUT4_CONFIG_DIR/"
+    rsync -av "$FALLOUT_LONDON_DIR/__Config/"* "$FALLOUT4_CONFIG_DIR/"
 else
     echo "__Config directory not found."
 fi
@@ -112,7 +112,7 @@ fi
 echo "Step 3: Moving _appdata files..."
 mkdir -p "$FALLOUT4_APPDATA_DIR"
 if [ -e "$FALLOUT_LONDON_DIR/__AppData" ]; then
-    rsync -a "$FALLOUT_LONDON_DIR/__AppData/"* "$FALLOUT4_APPDATA_DIR/"
+    rsync -av "$FALLOUT_LONDON_DIR/__AppData/"* "$FALLOUT4_APPDATA_DIR/"
 else
     echo "__AppData directory not found."
 fi
