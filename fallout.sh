@@ -101,6 +101,11 @@ if [ "$LAST_STEP" -lt 6 ]; then
     echo "Moving downloaded content and cleaning up..."
     rsync -av --remove-source-files "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/"*/ "$FALLOUT_4_DIR/"
 
+    # Manually move and overwrite the Fallout4 - Meshes.ba2 file
+    if [ -f "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Meshes.ba2" ]; then
+        mv -f "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Meshes.ba2" "$FALLOUT_4_DIR/Data/"
+    fi
+
     # Remove empty directories
     find "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/" -type d -empty -delete
 
