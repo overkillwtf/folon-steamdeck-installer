@@ -200,6 +200,9 @@ if [ "$LAST_STEP" -lt 10 ]; then
         sed -i 's/^iSize H=.*$/iSize H=800/' "$FALLOUT4_CONFIG_DIR/Fallout4Prefs.ini"
         sed -i 's/^iSize W=.*$/iSize W=1280/' "$FALLOUT4_CONFIG_DIR/Fallout4Prefs.ini"
         
+        # Remove lines starting with *cc from UserDownloadedContent.txt
+        sed -i '/^*cc/d' "$FALLOUT4_APPDATA_DIR/UserDownloadedContent.txt"
+        
         update_progress 10
     else
         echo "__AppData directory not found."
