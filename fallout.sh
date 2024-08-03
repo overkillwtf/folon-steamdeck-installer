@@ -212,6 +212,12 @@ if [ "$LAST_STEP" -lt 10 ]; then
     if [ -d "$FALLOUT_LONDON_DIR" ]; then
         rsync -av --remove-source-files "$FALLOUT_LONDON_DIR/" "$FALLOUT_4_DIR/"
         
+        # Check if f4se_loader.exe exists in the destination directory
+        if [ ! -f "$FALLOUT_4_DIR/f4se_loader.exe" ]; then
+            echo "f4se_loader.exe not found in the destination. Retrying rsync..."
+            rsync -av --remove-source-files "$FALLOUT_LONDON_DIR/" "$FALLOUT_4_DIR/"
+        fi
+
         # Check if there are any files left in the subfolders
         if find "$FALLOUT_LONDON_DIR/" -mindepth 1 -type f | read; then
             echo "Error: One or more files need to be moved manually."
