@@ -114,7 +114,7 @@ if [ "$LAST_STEP" -lt 6 ]; then
         echo "Error: One or more files need to be moved manually."
         echo "File(s) still present:"
         find "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/" -type f
-        zenity --info --title="Manual Intervention Required" --width="450" --text="Please move the remaining files manually from '$STEAMCMD_DIR/linux32/steamapps/content/app_377160/' to '$FALLOUT_4_DIR'. However, do not move folders starting with 'depot_'. Move their content. Normally it should only be one file, called Fallout4 - Meshes.ba2 that has to go into /Data/.\n\nClick OK when you have finished moving the files to continue." 2>/dev/null
+        zenity --info --title="Manual Intervention Required" --width="450" --text="Some files could not be moved. Please move the remaining files manually from '$STEAMCMD_DIR/linux32/steamapps/content/app_377160/' to '$FALLOUT_4_DIR'. However, do not move folders starting with 'depot_'. Move their content. Normally it should only be one file, called Fallout4 - Meshes.ba2 that has to go into /Data/.\n\nClick OK when you have finished moving the files to continue." 2>/dev/null
     else
         rm -rf "$STEAMCMD_DIR"
         rm "$DOWNGRADE_LIST_PATH"
@@ -149,7 +149,7 @@ if [ "$LAST_STEP" -lt 8 ]; then
             echo "Error: One or more files need to be moved manually."
             echo "File(s) still present:"
             find "$FALLOUT_LONDON_DIR/__Config" -type f
-            zenity --info --title="Manual Intervention Required" --width="450" --text="Please move the remaining files manually from '$FALLOUT_LONDON_DIR/__Config' to '$FALLOUT4_CONFIG_DIR'.\n\nClick OK when you have finished moving the files to continue." 2>/dev/null
+            zenity --info --title="Manual Intervention Required" --width="450" --text="Some files could not be moved. Please move the remaining files manually from '$FALLOUT_LONDON_DIR/__Config' to '$FALLOUT4_CONFIG_DIR'.\n\nClick OK when you have finished moving the files to continue." 2>/dev/null
         fi
         update_progress 8
     else
@@ -173,7 +173,7 @@ if [ "$LAST_STEP" -lt 9 ]; then
             echo "Error: One or more files need to be moved manually."
             echo "File(s) still present:"
             find "$FALLOUT_LONDON_DIR/__AppData" -type f
-            zenity --info --title="Manual Intervention Required" --width="450" --text="Please move the remaining files manually from '$FALLOUT_LONDON_DIR/__AppData' to '$FALLOUT4_APPDATA_DIR'.\n\nClick OK when you have finished moving the files to continue." 2>/dev/null
+            zenity --info --title="Manual Intervention Required" --width="450" --text="Some files could not be moved. Please move the remaining files manually from '$FALLOUT_LONDON_DIR/__AppData' to '$FALLOUT4_APPDATA_DIR'.\n\nClick OK when you have finished moving the files to continue." 2>/dev/null
         fi
 
         # Modify Fallout4Prefs.ini
@@ -202,7 +202,7 @@ if [ "$LAST_STEP" -lt 10 ]; then
             echo "Error: One or more files need to be moved manually."
             echo "File(s) still present:"
             find "$FALLOUT_LONDON_DIR/" -mindepth 1 -type f
-            zenity --info --title="Manual Intervention Required" --width="450" --text="Please move the remaining files manually from '$FALLOUT_LONDON_DIR' to '$FALLOUT_4_DIR'.\n\nClick OK when you have finished moving the files to continue." 2>/dev/null
+            zenity --info --title="Manual Intervention Required" --width="450" --text="Some files could not be moved. Please move the remaining files manually from '$FALLOUT_LONDON_DIR' to '$FALLOUT_4_DIR'.\n\nClick OK when you have finished moving the files to continue." 2>/dev/null
         fi
         update_progress 10
     else
