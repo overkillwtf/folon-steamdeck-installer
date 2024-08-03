@@ -134,28 +134,9 @@ if [ "$LAST_STEP" -lt 7 ]; then
     update_progress 7
 fi
 
-# Step 7: Move main game files (excluding __Config and __AppData)
+# Step 7: Move _config files
 if [ "$LAST_STEP" -lt 8 ]; then
-    echo "Step 7: Moving main game files..."
-    if [ -d "$FALLOUT_LONDON_DIR" ]; then
-        rsync -av --remove-source-files --exclude="__Config" --exclude="__AppData" "$FALLOUT_LONDON_DIR/" "$FALLOUT_4_DIR/"
-        
-        # Check if there are any files left in the subfolders, excluding __Config and __AppData
-        if find "$FALLOUT_LONDON_DIR/" -mindepth 1 ! -path "$FALLOUT_LONDON_DIR/__Config/*" ! -path "$FALLOUT_LONDON_DIR/__AppData/*" -type f | read; then
-            echo "Error: One or more files need to be moved manually."
-            echo "File(s) still present:"
-            find "$FALLOUT_LONDON_DIR/" -mindepth 1 ! -path "$FALLOUT_LONDON_DIR/__Config/*" ! -path "$FALLOUT_LONDON_DIR/__AppData/*" -type f
-            zenity --info --title="Manual Intervention Required" --width="450" --text="Please move the remaining files manually from '$FALLOUT_LONDON_DIR' to '$FALLOUT_4_DIR'.\n\nClick OK when you have finished moving the files to continue." 2>/dev/null
-        fi
-        update_progress 8
-    else
-        echo "Directory for main game files not found."
-        update_progress 8
-    fi
-fi
-# Step 8: Move _config files
-if [ "$LAST_STEP" -lt 9 ]; then
-    echo "Step 8: Moving _config files..."
+    echo "Step 7: Moving _config files..."
     mkdir -p "$FALLOUT4_CONFIG_DIR"
     if [ -d "$FALLOUT_LONDON_DIR/__Config" ]; then
         rsync -av --remove-source-files "$FALLOUT_LONDON_DIR/__Config/"* "$FALLOUT4_CONFIG_DIR/"
@@ -170,16 +151,16 @@ if [ "$LAST_STEP" -lt 9 ]; then
             find "$FALLOUT_LONDON_DIR/__Config" -type f
             zenity --info --title="Manual Intervention Required" --width="450" --text="Please move the remaining files manually from '$FALLOUT_LONDON_DIR/__Config' to '$FALLOUT4_CONFIG_DIR'.\n\nClick OK when you have finished moving the files to continue." 2>/dev/null
         fi
-        update_progress 9
+        update_progress 8
     else
         echo "__Config directory not found."
-        update_progress 9
+        update_progress 8
     fi
 fi
 
-# Step 9: Move _appdata files and modify Fallout4Prefs.ini
-if [ "$LAST_STEP" -lt 10 ]; then
-    echo "Step 9: Moving _appdata files..."
+# Step 8: Move _appdata files and modify Fallout4Prefs.ini
+if [ "$LAST_STEP" -lt 9 ]; then
+    echo "Step 8: Moving _appdata files..."
     mkdir -p "$FALLOUT4_APPDATA_DIR"
     if [ -d "$FALLOUT_LONDON_DIR/__AppData" ]; then
         rsync -av --remove-source-files "$FALLOUT_LONDON_DIR/__AppData/"* "$FALLOUT4_APPDATA_DIR/"
@@ -203,9 +184,29 @@ if [ "$LAST_STEP" -lt 10 ]; then
         # Remove lines starting with *cc from UserDownloadedContent.txt
         sed -i '/^*cc/d' "$FALLOUT4_APPDATA_DIR/UserDownloadedContent.txt"
         
-        update_progress 10
+        update_progress 9
     else
         echo "__AppData directory not found."
+        update_progress 9
+    fi
+fi
+
+# Step 9: Move main game files
+if [ "$LAST_STEP" -lt 10 ]; then
+    echo "Step 9: Moving main game files..."
+    if [ -d "$FALLOUT_LONDON_DIR" ]; then
+        rsync -av --remove-source-files "$FALLOUT_LONDON_DIR/" "$FALLOUT_4_DIR/"
+        
+        # Check if there are any files left in the subfolders
+        if find "$FALLOUT_LONDON_DIR/" -mindepth 1 -type f | read; then
+            echo "Error: One or more files need to be moved manually."
+            echo "File(s) still present:"
+            find "$FALLOUT_LONDON_DIR/" -mindepth 1 -type f
+            zenity --info --title="Manual Intervention Required" --width="450" --text="Please move the remaining files manually from '$FALLOUT_LONDON_DIR' to '$FALLOUT_4_DIR'.\n\nClick OK when you have finished moving the files to continue." 2>/dev/null
+        fi
+        update_progress 10
+    else
+        echo "Directory for main game files not found."
         update_progress 10
     fi
 fi
