@@ -1,9 +1,6 @@
 #!/bin/bash
 
-echo "Fallout London Patcher by Timo Schmidt and Kevin Wammer for overkill.wtf"
-sleep 1
-
-# Paths
+# Paths (these should already be defined in your script)
 STEAM_APPMANIFEST_PATH="$HOME/.local/share/Steam/steamapps/appmanifest_377160.acf"
 NONSTEAM_LAUNCHERS_DIR="$HOME/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program Files (x86)/GOG Galaxy/"
 DOWNGRADE_LIST_PATH="$HOME/Downloads/folon_downgrade.txt"
@@ -14,6 +11,24 @@ FALLOUT4_CONFIG_DIR="$HOME/.local/share/Steam/steamapps/compatdata/377160/pfx/dr
 FALLOUT4_APPDATA_DIR="$HOME/.local/share/Steam/steamapps/compatdata/377160/pfx/drive_c/users/steamuser/AppData/Local/Fallout4"
 F4LONDON_INI_URL="https://raw.githubusercontent.com/krupar101/f4london_steam_deck_ini/main/Fallout4.INI"
 PROGRESS_FILE="$HOME/.folon_patch_progress"
+
+# Function to handle script interruption
+cleanup() {
+    echo "Script interrupted. Rolling back one step..."
+    if [ -f "$PROGRESS_FILE" ]; then
+        LAST_STEP=$(cat "$PROGRESS_FILE")
+        PREV_STEP=$((LAST_STEP - 1))
+        if [ "$PREV_STEP" -lt 0 ]; then
+            PREV_STEP=0
+        fi
+        echo "$PREV_STEP" > "$PROGRESS_FILE"
+    fi
+    pkill -f zenity
+    exit 1
+}
+
+# Trap signals and call cleanup function
+trap cleanup SIGINT SIGTERM
 
 # Function to update progress
 update_progress() {
