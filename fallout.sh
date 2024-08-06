@@ -8,6 +8,9 @@ PROGRESS_FILE="$HOME/.folon_patch_progress"
 PROTON_DIR="$HOME/.steam/steam/steamapps/common/Proton - Experimental"
 STEAM_COMPAT_CLIENT_INSTALL_PATH="$HOME/.steam/steam"
 HEROIC_CONFIG_FILE="$HOME/.var/app/com.heroicgameslauncher.hgl/config/heroic/gog_store/installed.json"
+STEAM_COMPAT_DATA_PATH="$HOME/.steam/steam/steamapps/compatdata/377160"
+WINEPREFIX="$STEAM_COMPAT_DATA_PATH/pfx"
+FALLOUT_4_STEAMUSER_DIR="$WINEPREFIX/drive_c/users/steamuser"
 
 # Define paths to find installation directory.
 F4_LAUNCHER_NAME="Fallout4Launcher.exe"
@@ -20,18 +23,12 @@ if [ -e "$SSD_F4_LAUNCHER_FILE" ]; then
 
         STEAM_APPMANIFEST_PATH="$HOME/.local/share/Steam/steamapps/appmanifest_377160.acf"
         FALLOUT_4_DIR="$HOME/.steam/steam/steamapps/common/Fallout 4"
-        STEAM_COMPAT_DATA_PATH="$HOME/.steam/steam/steamapps/compatdata/377160"
-        WINEPREFIX="$STEAM_COMPAT_DATA_PATH/pfx"
-        FALLOUT_4_STEAMUSER_DIR="$WINEPREFIX/drive_c/users/steamuser"
 
 elif [ -e "$SD_CARD_F4_LAUNCHER_FILE" ]; then
     echo "Fallout 4 recognized to be installed on SD Card"
 
         STEAM_APPMANIFEST_PATH="/run/media/mmcblk0p1/steamapps/appmanifest_377160.acf"
         FALLOUT_4_DIR="/run/media/mmcblk0p1/steamapps/common/Fallout 4"
-        STEAM_COMPAT_DATA_PATH="$HOME/.steam/steam/steamapps/compatdata/377160"
-        WINEPREFIX="$STEAM_COMPAT_DATA_PATH/pfx"
-        FALLOUT_4_STEAMUSER_DIR="$WINEPREFIX/drive_c/users/steamuser"
 
 else
     echo "ERROR: Steam version of Fallout 4 is not installed on this device."
