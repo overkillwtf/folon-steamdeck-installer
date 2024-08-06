@@ -1,27 +1,62 @@
 #!/bin/bash
 
-# Paths (these should already be defined in your script)
-STEAM_APPMANIFEST_PATH="$HOME/.local/share/Steam/steamapps/appmanifest_377160.acf"
+# Global Paths
 DOWNGRADE_LIST_PATH="$HOME/Downloads/folon_downgrade.txt"
 STEAMCMD_DIR="$HOME/Downloads/SteamCMD"
-FALLOUT_4_DIR="$HOME/.steam/steam/steamapps/common/Fallout 4"
 F4LONDON_INI_URL="https://raw.githubusercontent.com/krupar101/f4london_steam_deck_ini/main/Fallout4.INI"
 PROGRESS_FILE="$HOME/.folon_patch_progress"
-
-# New / Changed
-STEAM_COMPAT_DATA_PATH="$HOME/.steam/steam/steamapps/compatdata/377160"
-WINEPREFIX="$STEAM_COMPAT_DATA_PATH/pfx"
 PROTON_DIR="$HOME/.steam/steam/steamapps/common/Proton - Experimental"
-GAME_EXE_PATH="$HOME/Games/Heroic/Fallout London/installer.exe"
 STEAM_COMPAT_CLIENT_INSTALL_PATH="$HOME/.steam/steam"
-FALLOUT_4_STEAMUSER_DIR="$WINEPREFIX/drive_c/users/steamuser"
-FALLOUT_LONDON_DIR="$HOME/Games/Heroic/Fallout London"
+HEROIC_CONFIG_FILE="$HOME/.var/app/com.heroicgameslauncher.hgl/config/heroic/gog_store/installed.json"
+
+# Define paths to find installation directory.
+F4_LAUNCHER_NAME="Fallout4Launcher.exe"
+SSD_F4_LAUNCHER_FILE="$HOME/.steam/steam/steamapps/common/Fallout 4/$F4_LAUNCHER_NAME"
+SD_CARD_F4_LAUNCHER_FILE="/run/media/mmcblk0p1/steamapps/common/Fallout 4/$F4_LAUNCHER_NAME"
+
+# Check where Steam Version of Fallout 4 is installed.
+if [ -e "$SSD_F4_LAUNCHER_FILE" ]; then
+    echo "Fallout 4 recognized to be installed on Internal SSD"
+
+        STEAM_APPMANIFEST_PATH="$HOME/.local/share/Steam/steamapps/appmanifest_377160.acf"
+        FALLOUT_4_DIR="$HOME/.steam/steam/steamapps/common/Fallout 4"
+        STEAM_COMPAT_DATA_PATH="$HOME/.steam/steam/steamapps/compatdata/377160"
+        WINEPREFIX="$STEAM_COMPAT_DATA_PATH/pfx"
+        FALLOUT_4_STEAMUSER_DIR="$WINEPREFIX/drive_c/users/steamuser"
+
+elif [ -e "$SD_CARD_F4_LAUNCHER_FILE" ]; then
+    echo "Fallout 4 recognized to be installed on SD Card"
+
+        STEAM_APPMANIFEST_PATH="/run/media/mmcblk0p1/steamapps/appmanifest_377160.acf"
+        FALLOUT_4_DIR="/run/media/mmcblk0p1/steamapps/common/Fallout 4"
+        STEAM_COMPAT_DATA_PATH="$HOME/.steam/steam/steamapps/compatdata/377160"
+        WINEPREFIX="$STEAM_COMPAT_DATA_PATH/pfx"
+        FALLOUT_4_STEAMUSER_DIR="$WINEPREFIX/drive_c/users/steamuser"
+
+else
+    echo "ERROR: Steam version of Fallout 4 is not installed on this device."
+fi
 
 
-# Not needed - can be removed
-#NONSTEAM_LAUNCHERS_DIR="$HOME/.local/share/Steam/steamapps/compatdata/NonSteamLaunchers/pfx/drive_c/Program Files (x86)/GOG Galaxy/"
-#FALLOUT4_CONFIG_DIR="$HOME/.local/share/Steam/steamapps/compatdata/377160/pfx/drive_c/users/steamuser/Documents/My Games/Fallout4"
-#FALLOUT4_APPDATA_DIR="$HOME/.local/share/Steam/steamapps/compatdata/377160/pfx/drive_c/users/steamuser/AppData/Local/Fallout4"
+find_f4london_install_path() {
+# Check if the file exists
+if [[ ! -f "$HEROIC_CONFIG_FILE" ]]; then
+    echo "Fallout London not recognized to be installed in Heroic Launcher."
+fi
+
+# Search for the install_path for the game "Fallout London"
+install_path=$(jq -r '.installed[] | select(.install_path | contains("Fallout London")) | .install_path' "$HEROIC_CONFIG_FILE")
+
+# Check if the install_path was found
+if [[ -n "$install_path" ]]; then
+    echo "Fallout London installation path found."
+    FALLOUT_LONDON_DIR="$install_path"
+else
+    echo "Fallout London not recognized to be installed in Heroic Launcher."
+    FALLOUT_LONDON_DIR="$HOME/Games/Heroic/Fallout London"
+fi
+GAME_EXE_PATH="$FALLOUT_LONDON_DIR/installer.exe"
+}
 
 # Function to handle script interruption
 cleanup() {
@@ -145,6 +180,7 @@ fi
 
 # Step 6: Check for Fallout: London installation
 if [ "$LAST_STEP" -lt 6 ]; then
+    find_f4london_install_path
     if [ ! -d "$FALLOUT_LONDON_DIR" ]; then
       text="<b>Please install Fallout London from Heroic Launcher</b>\n\n1. Go to 'Manage Accounts' in the left Heroic Launcher pane.\n2. Login to GoG\n3. Go to your library and install Fallout London.\n\nOnce Fallout London is installed - Close Heroic Launcher to continue.\n\nPress 'OK' to start Heroic Launcher and close this message."
       zenity --info \
@@ -162,6 +198,7 @@ fi
 # Step 7: Move main game files
 if [ "$LAST_STEP" -lt 7 ]; then
     echo "Step 9: Manual Installation of Fallout London"
+    find_f4london_install_path
     if [ -d "$FALLOUT_LONDON_DIR" ]; then
     
         # Export the variables
@@ -327,12 +364,12 @@ fi
 
 # Step 12: Move AppData files to steam directory. Backup existing files if there are any.
 if [ "$LAST_STEP" -lt 12 ]; then
+        find_f4london_install_path
 
 		# Define the directories and files
 		TARGET_DIR="$FALLOUT_4_STEAMUSER_DIR/AppData/Local/Fallout4"
 		BACKUP_DIR="$TARGET_DIR/backup"
 		FILES=("DLCList.txt" "Plugins.fo4viewsettings" "Plugins.txt" "UserDownloadedContent.txt")
-
 		# Check if the target directory exists
 		if [ -d "$TARGET_DIR" ]; then
 		    echo "AppData Directory Exists."
@@ -564,6 +601,7 @@ fi
 
 # Step 18: Cleanup: Remove Fallout London directory
 # if [ "$LAST_STEP" -lt 18 ]; then
+#     find_f4london_install_path
 #     echo "Cleaning up..."
 #     rm -rf "$FALLOUT_LONDON_DIR"
 #     update_progress 18
