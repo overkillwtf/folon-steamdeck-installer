@@ -11,15 +11,16 @@ The only prerequisite is installing Fallout 4 GOTY in **English** on your __**in
 This script performs the following actions:
 
 - Downgrades the Steam version of Fallout 4 to the right version (pre-NextGen).
-- Installs GOG through [NonSteamLaunchers](https://github.com/moraroy/NonSteamLaunchers-On-Steam-Deck) by @moraroy.
+- Installs GOG through Heroic Launcher.
 - Automatically moves the necessary files to the correct paths.
 
-Note: Right now, this script applies [the optimized .ini](https://github.com/krupar101/f4london_steam_deck_ini) by @krupar101
+Note: Right now, this script applies [the optimized .ini](https://github.com/krupar101/f4london_steam_deck_ini) by @krupar101.
 
-## Steps
+---
 
-1. **Open a Terminal on your Steam Deck.**
-2. **Download, Make Executable, and Run the Script:**
+## Installation
+
+To run the script, run the command below.
 
 ```
 curl -O https://raw.githubusercontent.com/overkillwtf/folon-steamdeck-installer/main/fallout.sh && \
@@ -27,9 +28,7 @@ chmod +x fallout.sh && \
 ./fallout.sh
 ```
 
-3. Before the downgrade starts, SteamCMD (a tool developed by Valve) will authenticate with the previously provided credentials, and might possibly need a 2FA / Steam Guard confirmation. None of your credentials will be stored in any form.
-
-4. The script will pause at one moment and ask you to download FOLON through the newly installed GOG (you can find GOG in your Steam Library). Don't close the script! Proceed once GOG has downloaded the mod completely by going back to the Konsole window and pressing a button.
+You can find the full written guide on overkill.wtf.
 
 ## Password Disclaimer:
 
