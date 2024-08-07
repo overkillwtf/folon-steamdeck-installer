@@ -382,20 +382,32 @@ if [ "$LAST_STEP" -lt 7 ]; then
     find_f4london_install_path
     if [ -d "$FALLOUT_LONDON_DIR" ]; then
     
-        # Export the variables
-        export STEAM_COMPAT_DATA_PATH
-        export WINEPREFIX
-
-        # Create the dosdevices directory if it doesn't exist
-        mkdir -p "$WINEPREFIX/dosdevices"
-
-        # Remove existing symlink if it exists
-        if [ -L "$WINEPREFIX/dosdevices/d:" ]; then
-            rm "$WINEPREFIX/dosdevices/d:"
-        fi
-
-        # Create the new symlink
-        ln -s "$FALLOUT_4_DIR" "$WINEPREFIX/dosdevices/d:"
+	# Check if Fallout 4 directory exists
+	if [ ! -d "$FALLOUT_4_DIR" ]; then
+	    echo "Fallout 4 directory not found: $FALLOUT_4_DIR"
+	    exit 1
+	fi
+	
+	# Ensure Wine prefix directory exists
+	if [ ! -d "$WINEPREFIX/dosdevices" ]; then
+	    echo "Wine prefix dosdevices directory not found: $WINEPREFIX/dosdevices"
+	    exit 1
+	fi
+	
+	# Remove any existing symlink or directory
+	if [ -e "$WINEPREFIX/dosdevices/d:" ]; then
+	    rm -f "$WINEPREFIX/dosdevices/d:"
+	fi
+	
+	# Create the symbolic link
+	ln -s "$FALLOUT_4_DIR" "$WINEPREFIX/dosdevices/d:"
+	
+	# Verify if the link was created successfully
+	if [ -L "$WINEPREFIX/dosdevices/d:" ]; then
+	    echo "Symbolic link created successfully."
+	else
+	    echo "Failed to create symbolic link."
+	fi
 
         zenity --info --title="Manual Installation" --width="450" --text="GoG installer for Fallout London will now launch.\n1. Click Install\n2. Select Drive D:\n3. Click Install Here\n\nClose the installer after it's done to continue the setup process.\n\nClick 'OK' in this window to start the process." 2>/dev/null
 
