@@ -370,6 +370,14 @@ fi
 
 # Step 7: Move main game files
 if [ "$LAST_STEP" -lt 7 ]; then
+
+	if [ -d "$PROTON_DIR" ]; then
+	    echo "Proton Experimental is installed. Continue..."
+	else
+	    echo "Proton Experimental is not installed."
+	    exit
+	fi
+
     echo "Step 9: Manual Installation of Fallout London"
     find_f4london_install_path
     if [ -d "$FALLOUT_LONDON_DIR" ]; then
