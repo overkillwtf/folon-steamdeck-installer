@@ -378,10 +378,14 @@ if [ "$LAST_STEP" -lt 7 ]; then
 	    exit
 	fi
 
-    echo "Step 9: Manual Installation of Fallout London"
+    echo "Step 7: Manual Installation of Fallout London"
     find_f4london_install_path
     if [ -d "$FALLOUT_LONDON_DIR" ]; then
-    
+
+
+	echo "$FALLOUT_4_DIR"
+	echo "$WINEPREFIX/dosdevices"
+     
 	# Check if Fallout 4 directory exists
 	if [ ! -d "$FALLOUT_4_DIR" ]; then
 	    echo "Fallout 4 directory not found: $FALLOUT_4_DIR"
@@ -398,7 +402,7 @@ if [ "$LAST_STEP" -lt 7 ]; then
 	if [ -e "$WINEPREFIX/dosdevices/d:" ]; then
 	    rm -f "$WINEPREFIX/dosdevices/d:"
 	fi
-	
+ 
 	# Create the symbolic link
 	ln -s "$FALLOUT_4_DIR" "$WINEPREFIX/dosdevices/d:"
 	
