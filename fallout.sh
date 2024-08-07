@@ -139,8 +139,27 @@ if [ "$LAST_STEP" -lt 4 ]; then
     echo "Please enter your Steam login credentials."
     echo "Note: Your login details are secure and will NOT be stored."
 
-    username=$(zenity --entry --title="Steam Username" --text="Enter name of your Steam user:")
-    password=$(zenity --password --title="Steam Password" --text="Enter your Steam user password to install required dependencies" 2>/dev/null)
+	# Loop until a non-empty username is entered
+	while true; do
+	    username=$(zenity --entry --title="Steam Username" --text="Enter name of your Steam user:")
+
+	    if [ -n "$username" ]; then
+		break
+	    else
+		zenity --error --title="Input Error" --text="Username cannot be empty. Please enter your Steam username."
+	    fi
+	done
+
+	# Loop until a non-empty password is entered
+	while true; do
+	    password=$(zenity --password --title="Steam Password" --text="Enter your Steam user password to install required dependencies" 2>/dev/null)
+
+	    if [ -n "$password" ]; then
+		break
+	    else
+		zenity --error --title="Input Error" --text="Password cannot be empty. Please enter your Steam user password."
+	    fi
+	done
 
     # Run SteamCMD with the provided credentials and script
     echo "Running SteamCMD with provided credentials..."
