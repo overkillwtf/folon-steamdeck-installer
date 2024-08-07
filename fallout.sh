@@ -125,6 +125,23 @@ sleep 1
 
 # Step 3: Setting up SteamCMD
 if [ "$LAST_STEP" -lt 3 ]; then
+
+	if [ -d "/run/media/mmcblk0p1" ]; then
+	    echo "SD Card detected"
+	    
+	response=$(zenity --forms --title="Choose file download location" --text="To downgrade Fallout 4 the script needs to download ~35GB of files.\nPlease ensure you have that much space available on the preferred device (SSD/microSD Card).\n\nWhere would you like to download the files?\n" --ok-label="Internal SSD" --cancel-label="microSD Card")
+		# Check the response
+		if [ $? -eq 0 ]; then
+		    echo "Internal SSD Selected"
+		else
+		    echo "microSD Card Selected"
+		    STEAMCMD_DIR="/run/media/mmcblk0p1/Downloads/SteamCMD"
+		fi
+	else
+	    echo "SD Card not detected - Default to Internal SSD"
+		zenity --info --title="Download process message" --width="450" --text="To downgrade Fallout 4 the script needs to download ~35GB of files.\nPlease ensure you have that much space available on your SSD.\n\nConfirm this window only after you make sure you have enough memory." 2>/dev/null
+	fi
+
     echo "Setting up SteamCMD..."
     mkdir -p "$STEAMCMD_DIR"
     cd "$STEAMCMD_DIR" || { echo "Failed to change directory to $STEAMCMD_DIR"; exit 1; }
@@ -165,6 +182,121 @@ if [ "$LAST_STEP" -lt 4 ]; then
     echo "Running SteamCMD with provided credentials..."
     chmod +x "$STEAMCMD_DIR/steamcmd.sh"
     "$STEAMCMD_DIR/steamcmd.sh" +login "$username" "$password" +runscript "$DOWNGRADE_LIST_PATH"
+
+	expected_files=(
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_435881/Data/DLCCoast - Geometry.csg"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_435881/Data/DLCCoast - Textures.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_435881/Data/DLCCoast - Main.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_435881/Data/DLCCoast.cdx"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_435871/Data/DLCRobot - Voices_en.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_435871/Data/DLCRobot.esm"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377162/Fallout4.exe"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_435870/Data/DLCRobot - Main.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_435870/Data/DLCRobot - Textures.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_435870/Data/DLCRobot - Geometry.csg"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_435870/Data/DLCRobot.cdx"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_435880/Data/DLCworkshop01.esm"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_435880/Data/DLCworkshop01 - Textures.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_435880/Data/DLCworkshop01 - Geometry.csg"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_435880/Data/DLCworkshop01 - Main.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_435880/Data/DLCworkshop01.cdx"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377164/Fallout4_Default.ini"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377164/Data/Video/Intro.bk2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377164/Data/Video/Endgame_MALE_A.bk2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377164/Data/Video/Endgame_FEMALE_A.bk2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377164/Data/Video/Endgame_FEMALE_B.bk2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377164/Data/Video/Endgame_MALE_B.bk2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377164/Data/Fallout4 - Voices.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377161/Data/Fallout4 - Sounds.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377161/Data/Fallout4 - Meshes.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377161/Data/Video/INTELLIGENCE.bk2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377161/Data/Video/ENDURANCE.bk2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377161/Data/Video/MainMenuLoop.bk2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377161/Data/Video/STRENGTH.bk2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377161/Data/Video/LUCK.bk2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377161/Data/Video/PERCEPTION.bk2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377161/Data/Video/CHARISMA.bk2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377161/Data/Video/GameIntro_V3_B.bk2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377161/Data/Video/AGILITY.bk2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377161/installscript.vdf"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_435882/Data/DLCCoast - Voices_en.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_435882/Data/DLCCoast.esm"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/bink2w64.dll"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/GFSDK_SSAO_D3D11.win64.dll"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/flexExtRelease_x64.dll"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/nvToolsExt64_1.dll"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Fallout4/Fallout4Prefs.ini"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Low.ini"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/steam_api64.dll"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Fallout4Launcher.exe"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/flexRelease_x64.dll"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Ultra.ini"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/nvdebris.txt"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Textures9.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4038-HorseArmor - Main.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Shaders.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Textures2.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccFSVFO4002-MidCenturyModern - Textures.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Textures5.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4003-PipBoy(Camo01) - Textures.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - MeshesExtra.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Textures4.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4003-PipBoy(Camo01) - Main.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Animations.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4006-PipBoy(Chrome) - Main.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccFRSFO4001-HandmadeShotgun - Textures.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4004-PipBoy(Camo02) - Textures.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4016-Prey - Main.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Startup.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4020-PowerArmorSkin(Black) - Main.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Meshes.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Textures1.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Nvflex.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4019-ChineseStealthArmor - Textures.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccFSVFO4001-ModularMilitaryBackpack - Textures.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4006-PipBoy(Chrome) - Textures.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccFSVFO4002-MidCenturyModern - Main.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4020-PowerArmorSkin(Black) - Textures.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Materials.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Textures6.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Interface.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4019-ChineseStealthArmor - Main.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Geometry.csg"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccFRSFO4001-HandmadeShotgun - Main.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4004-PipBoy(Camo02) - Main.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4018-GaussRiflePrototype - Main.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccFSVFO4001-ModularMilitaryBackpack - Main.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4001-PipBoy(Black) - Main.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Misc.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4001-PipBoy(Black) - Textures.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4044-HellfirePowerArmor - Main.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4.cdx"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4038-HorseArmor - Textures.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Textures3.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4016-Prey - Textures.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4.esm"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4018-GaussRiflePrototype - Textures.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Textures8.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Textures7.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4044-HellfirePowerArmor - Textures.ba2"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/GFSDK_GodraysLib.x64.dll"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Medium.ini"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/msvcr110.dll"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Fallout4.ccc"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/msvcp110.dll"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/cudart64_75.dll"
+	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/High.ini"
+	)
+
+	# Check if all expected files exist
+	for file in "${expected_files[@]}"; do
+	    if [ ! -f "$file" ]; then
+		echo "ERROR: Download progress was not successful. Please run the script again."
+		exit 1
+	    fi
+	done
+    	echo "All files downloaded successfully."
+    
     update_progress 4
 fi
 
