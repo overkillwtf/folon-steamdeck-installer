@@ -2,7 +2,6 @@
 
 # Global Paths
 DOWNGRADE_LIST_PATH="$HOME/Downloads/folon_downgrade.txt"
-STEAMCMD_DIR="$HOME/Downloads/SteamCMD"
 F4LONDON_INI_URL="https://raw.githubusercontent.com/krupar101/f4london_steam_deck_ini/main/Fallout4.INI"
 PROGRESS_FILE="$HOME/.folon_patch_progress"
 PROTON_DIR="$HOME/.steam/steam/steamapps/common/Proton - Experimental"
@@ -53,6 +52,30 @@ else
     FALLOUT_LONDON_DIR="$HOME/Games/Heroic/Fallout London"
 fi
 GAME_EXE_PATH="$FALLOUT_LONDON_DIR/installer.exe"
+}
+
+function depot_download_location_choice () {
+# Check if STEAMCMD_DIR is set
+    if [ -z "$STEAMCMD_DIR" ]; then
+    	if [ -d "/run/media/mmcblk0p1" ]; then
+    	    echo "SD Card detected"
+    	response=$(zenity --forms --title="Choose file download location" --text="To downgrade Fallout 4 the script needs to download ~35GB of files.\nPlease ensure you have that much space available on the preferred device (SSD/microSD Card).\n\nWhere would you like to download the files?\n" --ok-label="Internal SSD" --cancel-label="microSD Card")
+    		# Check the response
+    		if [ $? -eq 0 ]; then
+    		    echo "Internal SSD Selected"
+                    STEAMCMD_DIR="$HOME/Downloads/SteamCMD"
+    		else
+    		    echo "microSD Card Selected"
+    		    STEAMCMD_DIR="/run/media/mmcblk0p1/Downloads/SteamCMD"
+    		fi
+    	else
+    	    echo "SD Card not detected - Default to Internal SSD"
+    		zenity --info --title="Download process message" --width="450" --text="To downgrade Fallout 4 the script needs to download ~35GB of files.\nPlease ensure you have that much space available on your SSD.\n\nConfirm this window only after you make sure you have enough memory." 2>/dev/null
+        	STEAMCMD_DIR="$HOME/Downloads/SteamCMD"
+        fi
+    else
+        echo "STEAMCMD_DIR is set to $STEAMCMD_DIR"
+    fi
 }
 
 # Function to handle script interruption
@@ -126,21 +149,7 @@ sleep 1
 # Step 3: Setting up SteamCMD
 if [ "$LAST_STEP" -lt 3 ]; then
 
-	if [ -d "/run/media/mmcblk0p1" ]; then
-	    echo "SD Card detected"
-	    
-	response=$(zenity --forms --title="Choose file download location" --text="To downgrade Fallout 4 the script needs to download ~35GB of files.\nPlease ensure you have that much space available on the preferred device (SSD/microSD Card).\n\nWhere would you like to download the files?\n" --ok-label="Internal SSD" --cancel-label="microSD Card")
-		# Check the response
-		if [ $? -eq 0 ]; then
-		    echo "Internal SSD Selected"
-		else
-		    echo "microSD Card Selected"
-		    STEAMCMD_DIR="/run/media/mmcblk0p1/Downloads/SteamCMD"
-		fi
-	else
-	    echo "SD Card not detected - Default to Internal SSD"
-		zenity --info --title="Download process message" --width="450" --text="To downgrade Fallout 4 the script needs to download ~35GB of files.\nPlease ensure you have that much space available on your SSD.\n\nConfirm this window only after you make sure you have enough memory." 2>/dev/null
-	fi
+    depot_download_location_choice
 
     echo "Setting up SteamCMD..."
     mkdir -p "$STEAMCMD_DIR"
@@ -153,6 +162,9 @@ sleep 1
 
 # Step 4: Prompt user for Steam login credentials
 if [ "$LAST_STEP" -lt 4 ]; then
+
+    depot_download_location_choice
+
     echo "Please enter your Steam login credentials."
     echo "Note: Your login details are secure and will NOT be stored."
 
