@@ -103,7 +103,17 @@ update_progress() {
 
 # Read last completed step
 if [ -f "$PROGRESS_FILE" ]; then
-    LAST_STEP=$(cat "$PROGRESS_FILE")
+	response=$(zenity --question --text="Looks like the script was interrupted.\n\nDo you want to continue the process from last known step or restart again from the beginning?" --ok-label="Restart from the beginning" --cancel-label="Continue from last known step" --title="Script interrupted")
+
+	# Check the response
+	if [ $? -eq 0 ]; then
+	    echo "Restart the script from beginning"
+	    rm -f "$PROGRESS_FILE"
+	    LAST_STEP=0
+	else
+	    echo "Continue from last known step."
+	    LAST_STEP=$(cat "$PROGRESS_FILE")
+	fi
 else
     LAST_STEP=0
 fi
