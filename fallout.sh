@@ -415,15 +415,6 @@ if [ "$LAST_STEP" -lt 7 ]; then
 
         zenity --info --title="Manual Installation" --width="450" --text="GoG installer for Fallout London will now launch.\n1. Click Install\n2. Select Drive D:\n3. Click Install Here\n\nClose the installer after it's done to continue the setup process.\n\nClick 'OK' in this window to start the process." 2>/dev/null
 
-        
-        # Verify the symlink
-        if [ -L "$WINEPREFIX/dosdevices/d:" ]; then
-            echo "Drive D: successfully created pointing to $FALLOUT_4_DIR"
-        else
-            echo "Failed to create Drive D:"
-            exit
-        fi
-
 	printf "\n\nGoG installer for Fallout London will now launch.\n\n1. Click Install\n2. Select Drive D:\n3. Click Install Here\n\nClose the installer after it's done to continue the setup process.\n\n"
 	
 	# Run the game using Proton with the specified Wine prefix and compatibility data path
