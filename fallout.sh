@@ -886,13 +886,12 @@ fi
     update_progress 18
 fi
 
+# Cleanup progress file
+rm -f "$PROGRESS_FILE"
+
 text="<b>All steps completed successfully!</b>\n\nYou can now close the terminal / Konsole.\nFallout London can be launched from Fallout 4 Steam page."
 zenity --info \
        --title="Overkill" \
        --width="450" \
        --text="$text" 2>/dev/null
-
-# Cleanup progress file
-rm -f "$PROGRESS_FILE"
-
 exit
