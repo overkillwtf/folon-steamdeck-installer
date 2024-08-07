@@ -20,7 +20,7 @@ SD_CARD_F4_LAUNCHER_FILE="/run/media/mmcblk0p1/steamapps/common/Fallout 4/$F4_LA
 if [ -e "$SSD_F4_LAUNCHER_FILE" ]; then
     echo "Fallout 4 recognized to be installed on Internal SSD"
 
-        STEAM_APPMANIFEST_PATH="$HOME/.local/share/Steam/steamapps/appmanifest_377160.acf"
+        STEAM_APPMANIFEST_PATH="$HOME/.steam/steam/steamapps/appmanifest_377160.acf"
         FALLOUT_4_DIR="$HOME/.steam/steam/steamapps/common/Fallout 4"
 
 elif [ -e "$SD_CARD_F4_LAUNCHER_FILE" ]; then
@@ -799,13 +799,92 @@ if [ "$LAST_STEP" -lt 17 ]; then
     update_progress 17
 fi
 
-# Step 18: Cleanup: Remove Fallout London directory
-# if [ "$LAST_STEP" -lt 18 ]; then
-#     find_f4london_install_path
-#     echo "Cleaning up..."
-#     rm -rf "$FALLOUT_LONDON_DIR"
-#     update_progress 18
-# fi
+# Step 18: Disable Steam Updates for Fallout 4 (Optional Step)
+if [ "$LAST_STEP" -lt 18 ]; then
+
+# Define colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+FILE="$STEAM_APPMANIFEST_PATH"
+
+disable_steam_updates_escape_message() {
+echo ""
+echo "You decided not to disable automatic updates for Fallout 4. The game may still be automatically updated through Steam which can break the Fallout London installation."
+echo ""
+}
+
+# Check if the file exists first
+if [ -e "$FILE" ]; then
+	# Get the attributes of the file
+	attributes=$(lsattr "$FILE" 2>/dev/null | awk '{print $1}')
+
+	# Check if the immutable attribute 'i' is set
+	if [[ $attributes == *i* ]]; then
+		printf "${GREEN}Automatic updates for Steam version of Fallout 4 are disabled. \n\n${RED}If you ever want to re-enable automatic updates for Fallout 4, run this command in konsole:\nsudo chattr -i \"$FILE\"${NC}\n\n"
+	else
+
+        response=$(zenity --question --text="(Optional Step) Automatic updates for Steam version of Fallout 4 are enabled. \nDo you want to disable Steam automatic updates for Fallout 4? \n\n- THIS ACTION IS PERMANENT AND WILL REQUIRE YOU TO RUN A COMMAND IN CONSOLE TO REVERT IT BACK!\n- THIS COMMAND REQUIRES SUPER USER (SUDO) PRIVILEGES.\n- YOU WILL NEED TO PROVIDE SUDO PASSWORD TO PERFORM THIS STEP." --ok-label="Yes" --cancel-label="No" --title="Disable Steam Updates")
+
+		if [ $? -eq 0 ]; then
+
+            response=$(zenity --question --text="If you don't know what you're doing it's recommended not to perform this action. \n\nAre you sure you want to continue?" --ok-label="Yes" --cancel-label="No" --title="Disable Steam Updates")
+
+			# Evaluate the response
+			if [ $? -eq 0 ]; then
+
+				# Get the password status for the current user
+				PASS_STATUS=$(passwd -S $USER 2>/dev/null)
+
+				# Extract the status field from the output
+				STATUS=${PASS_STATUS:${#USER}+1:2}
+
+				password_set="N"
+
+				if [ "$STATUS" = "NP" ]; then
+                    echo ""
+					echo "SUDO PASSWORD NOT SET"
+                    echo ""
+
+                    response=$(zenity --question --text="It looks like you don't have a SUDO password set for $USER user. Do you want to set it right now?\n\n<b>You will need to type it into the Konsole window</b>" --ok-label="Yes" --cancel-label="No" --title="Disable Steam Updates")
+
+					# Evaluate the response
+					if [ $? -eq 0 ]; then
+						passwd
+						password_set="Y"
+						echo "SUDO Password is set for the user $USER"
+					else
+						disable_steam_updates_escape_message
+					fi
+
+				else
+					echo "SUDO Password is set for the user $USER."
+					password_set="Y"
+				fi
+			else
+				disable_steam_updates_escape_message
+			fi
+
+			if [ "$password_set" = "Y" ]; then
+                zenity --info --text="You will need to switch your focus on the Konsole window!\n\nPress 'OK' to proceed" --title="Disable Steam Updates"
+				echo "Please provide your password to disable Steam Automatic Updates for Fallout 4."
+				sudo chattr +i "$FILE"
+				printf "${GREEN}Automatic updates for Steam version of Fallout 4 are disabled. \n\n${RED}If you ever want to re-enable automatic updates for Fallout 4, run this command in Konsole:\nsudo chattr -i \"$FILE\"${NC}\n\n"
+			fi
+		else
+            disable_steam_updates_escape_message
+		fi
+	fi
+
+else
+	echo "file $file does not exist."
+fi
+
+
+    update_progress 18
+fi
 
 text="<b>All steps completed successfully!</b>\n\nYou can now close the terminal / Konsole.\nFallout London can be launched from Fallout 4 Steam page."
 zenity --info \
