@@ -54,7 +54,7 @@ fi
 GAME_EXE_PATH="$FALLOUT_LONDON_DIR/installer.exe"
 }
 
-function depot_download_location_choice () {
+depot_download_location_choice () {
 # Check if STEAMCMD_DIR is set
     if [ -z "$STEAMCMD_DIR" ]; then
     	if [ -d "/run/media/mmcblk0p1" ]; then
