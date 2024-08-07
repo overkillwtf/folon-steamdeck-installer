@@ -673,13 +673,40 @@ if [ "$LAST_STEP" -lt 16 ]; then
                 echo ""
                 echo "If you don't have a keyboard connected you can press 'STEAM' + 'X' buttons to launch the software keyboard."
                 echo ""
-                echo "Drop the zip file here:"
+		
+		while true; do
+		    # Prompt the user to drop a file and read the input
+		    echo ""
+		    echo "Drop the 'Buffout 4' zip file here:"
+		    read -r dropped_file
+		
+		    # Remove single quotes from the file path if they exist
+		    dropped_file="${dropped_file//\'/}"
+		
+		    # Check if the input is empty
+		    if [[ -z "$dropped_file" ]]; then
+		        echo "Error: No file provided. Please drop a file."
+		        continue
+		    fi
+		
+		    # Check if the file exists
+		    if [[ ! -e "$dropped_file" ]]; then
+		        echo "Error: File does not exist. Please drop a valid file."
+		        continue
+		    fi
+		
+		    # Check if the file is a .zip file
+		    if [[ ! "$dropped_file" =~ \.zip$ ]]; then
+		        echo "Error: The file is not a .zip file. Please drop a .zip file."
+		        continue
+		    fi
+		
+		    # If all checks pass, break out of the loop
+		    echo "The file '$dropped_file' is a valid .zip file."
+		    break
+		done
 
-                # Read the full path of the dropped file
-                read -r dropped_file
-                
-                # Remove single quotes and replace with double quotes
-                dropped_file="${dropped_file//\'/}"
+  
                 # Check if the file exists
                 if [ -f "$dropped_file" ]; then
                 echo "File dropped: ${dropped_file}"
