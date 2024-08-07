@@ -355,13 +355,13 @@ fi
 if [ "$LAST_STEP" -lt 6 ]; then
     find_f4london_install_path
     if [ ! -d "$FALLOUT_LONDON_DIR" ]; then
-      text="<b>Please install Fallout London from Heroic Launcher</b>\n\n1. Go to 'Manage Accounts' in the left Heroic Launcher pane.\n2. Login to GoG\n3. Go to your library and install Fallout London.\n\nOnce Fallout London is installed - Close Heroic Launcher to continue.\n\nPress 'OK' to start Heroic Launcher and close this message."
+      text="<b>Please install Fallout London from Heroic Launcher</b>\n\n1. Go to 'Log in' in the left Heroic Launcher pane.\n2. Login to GoG\n3. Go to your library and install Fallout London.\n\nOnce Fallout London is installed - Close Heroic Launcher to continue.\n\nPress 'OK' to start Heroic Launcher and close this message."
       zenity --info \
              --title="Overkill" \
              --width="450" \
              --text="$text" 2>/dev/null
       echo ""
-      printf "Please install Fallout London from Heroic Launcher\n\n1. Go to 'Manage Accounts' in the left Heroic Launcher pane.\n2. Login to GoG\n3. Go to your library and install Fallout London.\n\nOnce Fallout London is installed - Close Heroic Launcher to continue.\n"
+      printf "Please install Fallout London from Heroic Launcher\n\n1. Go to 'Log in' in the left Heroic Launcher pane.\n2. Login to GoG\n3. Go to your library and install Fallout London.\n\nOnce Fallout London is installed - Close Heroic Launcher to continue.\n"
       echo "" 
       flatpak run com.heroicgameslauncher.hgl > /dev/null 2>&1
     fi
