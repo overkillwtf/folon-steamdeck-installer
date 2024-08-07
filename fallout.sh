@@ -420,7 +420,6 @@ if [ "$LAST_STEP" -lt 7 ]; then
 	printf "\n\nGoG installer for Fallout London will now launch.\n\n1. Click Install\n2. Select Drive D:\n3. Click Install Here\n\nClose the installer after it's done to continue the setup process.\n\n"
 	
 	# Run the game using Proton with the specified Wine prefix and compatibility data path
-	STEAM_COMPAT_DATA_PATH="$STEAM_COMPAT_DATA_PATH" \
 	STEAM_COMPAT_CLIENT_INSTALL_PATH="$STEAM_COMPAT_CLIENT_INSTALL_PATH" \
 	WINEPREFIX="$WINEPREFIX" \
 	"$PROTON_DIR/proton" run "$GAME_EXE_PATH"
