@@ -399,21 +399,21 @@ if [ "$LAST_STEP" -lt 7 ]; then
 	fi
 	
 	# Remove any existing symlink or directory
-	if [ -e "$WINEPREFIX/dosdevices/d:" ]; then
-	    rm -f "$WINEPREFIX/dosdevices/d:"
+	if [ -e "$WINEPREFIX/dosdevices/s:" ]; then
+	    rm -f "$WINEPREFIX/dosdevices/s:"
 	fi
 
 	# Create the symbolic link
-	ln -s "$FALLOUT_4_DIR" "$WINEPREFIX/dosdevices/d:"
+	ln -s "$FALLOUT_4_DIR" "$WINEPREFIX/dosdevices/s:"
 	
 	# Verify if the link was created successfully
-	if [ -L "$WINEPREFIX/dosdevices/d:" ]; then
+	if [ -L "$WINEPREFIX/dosdevices/s:" ]; then
 	    echo "Symbolic link created successfully."
 	else
 	    echo "Failed to create symbolic link."
 	fi
 
-	ls -l "$WINEPREFIX/dosdevices/d:"
+	ls -l "$WINEPREFIX/dosdevices/s:"
  
         zenity --info --title="Manual Installation" --width="450" --text="GoG installer for Fallout London will now launch.\n1. Click Install\n2. Select Drive D:\n3. Click Install Here\n\nClose the installer after it's done to continue the setup process.\n\nClick 'OK' in this window to start the process." 2>/dev/null
 
