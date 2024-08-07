@@ -314,6 +314,9 @@ fi
 
 # Step 5: Move downloaded content and clean up
 if [ "$LAST_STEP" -lt 5 ]; then
+    
+    depot_download_location_choice
+
     echo "Moving downloaded content and cleaning up..."
     rsync -av --remove-source-files "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/"*/ "$FALLOUT_4_DIR/"
 
