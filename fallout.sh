@@ -373,52 +373,51 @@ if [ "$LAST_STEP" -lt 7 ]; then
 
     echo "Step 7: Manual Installation of Fallout London"
 
-
-
 	if [ -d "$PROTON_DIR" ]; then
 	    echo "Proton Experimental is installed. Continue..."
 	else
 	    echo "Proton Experimental is not installed."
+	    echo ""
+	    echo "Go to your STEAM LIBRARY and install 'Proton Experimental'"
+	    echo "After that run the script one more time and select 'Continue from last known step'"
 	    exit
 	fi
 
 
     find_f4london_install_path
     if [ -d "$FALLOUT_LONDON_DIR" ]; then
-    
+
         # Export the variables
         export STEAM_COMPAT_DATA_PATH
         export WINEPREFIX
+        export STEAM_COMPAT_CLIENT_INSTALL_PATH="/home/deck/.steam"
+
 
         # Create the dosdevices directory if it doesn't exist
         mkdir -p "$WINEPREFIX/dosdevices"
 
         # Remove existing symlink if it exists
-        if [ -L "$WINEPREFIX/dosdevices/d:" ]; then
-            rm "$WINEPREFIX/dosdevices/d:"
+        if [ -L "$WINEPREFIX/dosdevices/f:" ]; then
+            rm "$WINEPREFIX/dosdevices/f:"
         fi
 
         # Create the new symlink
-        ln -s "$FALLOUT_4_DIR" "$WINEPREFIX/dosdevices/d:"
+        ln -s "$FALLOUT_4_DIR" "$WINEPREFIX/dosdevices/f:"
 
-        zenity --info --title="Manual Installation" --width="450" --text="GoG installer for Fallout London will now launch.\n1. Click Install\n2. Select Drive D:\n3. Click Install Here\n\nClose the installer after it's done to continue the setup process.\n\nClick 'OK' in this window to start the process." 2>/dev/null
-
-        
         # Verify the symlink
-        if [ -L "$WINEPREFIX/dosdevices/d:" ]; then
-            echo "Drive D: successfully created pointing to $FALLOUT_4_DIR"
+        if [ -L "$WINEPREFIX/dosdevices/f:" ]; then
+            echo "Drive F: successfully created pointing to $FALLOUT_4_DIR"
         else
-            echo "Failed to create Drive D:"
+            echo "Failed to create Drive F:"
             exit
         fi
 
-	printf "\n\nGoG installer for Fallout London will now launch.\n\n1. Click Install\n2. Select Drive D:\n3. Click Install Here\n\nClose the installer after it's done to continue the setup process.\n\n"
-	
+        zenity --info --title="Manual Installation" --width="450" --text="GoG installer for Fallout London will now launch.\n1. Click Install\n2. Select Drive F:\n3. Click Install Here\n\nClose the installer after it's done to continue the setup process.\n\nClick 'OK' in this window to start the process." 2>/dev/null
+	printf "\n\nGoG installer for Fallout London will now launch.\n\n1. Click Install\n2. Select Drive F:\n3. Click Install Here\n\nClose the installer after it's done to continue the setup process.\n\n"
 	# Run the game using Proton with the specified Wine prefix and compatibility data path
-	STEAM_COMPAT_DATA_PATH="$STEAM_COMPAT_DATA_PATH" \
-	STEAM_COMPAT_CLIENT_INSTALL_PATH="$STEAM_COMPAT_CLIENT_INSTALL_PATH" \
-	WINEPREFIX="$WINEPREFIX" \
-	"$PROTON_DIR/proton" run "$GAME_EXE_PATH"
+
+        killall wineserver
+        "$PROTON_DIR/proton" run "$GAME_EXE_PATH"
 
         update_progress 7
     fi
@@ -431,6 +430,7 @@ if [ "$LAST_STEP" -lt 8 ]; then
     	
     	if [ "$fallout4defaultlauncher_default_sha256sum" == "$fallout4defaultlauncher_actual_sha256sum" ]; then
     		    echo "You are using standard Fallout 4 launcher exe. Your Game is not downgraded."
+	  	    echo "Please start the script again from the beginning."
     		    exit 1
     	else
     		echo "Correct. Game does not launch with standard launcher"
@@ -468,7 +468,9 @@ if [ "$fallout4defaultlauncher_downgraded_sha256sum" == "$fallout4defaultlaunche
         mv "$f4se_loader_file" "$launcher_file"
         echo "Files have been renamed."
     else
+    	update_progress 6
         echo "ERROR: Fallout London is not installed or installation was not successful."
+	echo "ERROR: Please run the script again and select 'Continue from last known step'"
         exit 1
     fi
 
