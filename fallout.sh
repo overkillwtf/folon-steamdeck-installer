@@ -373,9 +373,7 @@ if [ "$LAST_STEP" -lt 7 ]; then
 
     echo "Step 7: Manual Installation of Fallout London"
 
-        # Export the variables
-        export STEAM_COMPAT_DATA_PATH
-        export WINEPREFIX
+
 
 	if [ -d "$PROTON_DIR" ]; then
 	    echo "Proton Experimental is installed. Continue..."
@@ -387,52 +385,34 @@ if [ "$LAST_STEP" -lt 7 ]; then
 
     find_f4london_install_path
     if [ -d "$FALLOUT_LONDON_DIR" ]; then
-
-
-	echo "$FALLOUT_4_DIR"
-	echo "$WINEPREFIX/dosdevices"
+    
+        # Export the variables
+        export STEAM_COMPAT_DATA_PATH
+        export WINEPREFIX
 
         # Create the dosdevices directory if it doesn't exist
         mkdir -p "$WINEPREFIX/dosdevices"
 
-	# Check if Fallout 4 directory exists
-	if [ ! -d "$FALLOUT_4_DIR" ]; then
-	    echo "Fallout 4 directory not found: $FALLOUT_4_DIR"
-	    exit 1
-	fi
-	
-	# Ensure Wine prefix directory exists
-	if [ ! -d "$WINEPREFIX/dosdevices" ]; then
-	    echo "Wine prefix dosdevices directory not found: $WINEPREFIX/dosdevices"
-	    exit 1
-	fi
-	
-	# Remove any existing symlink or directory
-	if [ -e "$WINEPREFIX/dosdevices/f:" ]; then
-	    rm -f "$WINEPREFIX/dosdevices/f:"
-	fi
+        # Remove existing symlink if it exists
+        if [ -L "$WINEPREFIX/dosdevices/d:" ]; then
+            rm "$WINEPREFIX/dosdevices/d:"
+        fi
 
-	# Create the symbolic link
-	ln -s "$FALLOUT_4_DIR" "$WINEPREFIX/dosdevices/f:"
-	
-	# Verify if the link was created successfully
-	if [ -L "$WINEPREFIX/dosdevices/f:" ]; then
-	    echo "Symbolic link created successfully."
-	else
-	    echo "Failed to create symbolic link."
-	fi
+        # Create the new symlink
+        ln -s "$FALLOUT_4_DIR" "$WINEPREFIX/dosdevices/d:"
 
-	ls -l "$WINEPREFIX/dosdevices/f:"
- 
         zenity --info --title="Manual Installation" --width="450" --text="GoG installer for Fallout London will now launch.\n1. Click Install\n2. Select Drive D:\n3. Click Install Here\n\nClose the installer after it's done to continue the setup process.\n\nClick 'OK' in this window to start the process." 2>/dev/null
 
-	printf "\n\nGoG installer for Fallout London will now launch.\n\n1. Click Install\n2. Select Drive D:\n3. Click Install Here\n\nClose the installer after it's done to continue the setup process.\n\n"
+        
+        # Verify the symlink
+        if [ -L "$WINEPREFIX/dosdevices/d:" ]; then
+            echo "Drive D: successfully created pointing to $FALLOUT_4_DIR"
+        else
+            echo "Failed to create Drive D:"
+            exit
+        fi
 
-	# Print environment variables for verification
-	echo "STEAM_COMPAT_CLIENT_INSTALL_PATH: $STEAM_COMPAT_CLIENT_INSTALL_PATH"
-	echo "WINEPREFIX: $WINEPREFIX"
-	echo "PROTON_DIR: $PROTON_DIR"
-	echo "GAME_EXE_PATH: $GAME_EXE_PATH"
+	printf "\n\nGoG installer for Fallout London will now launch.\n\n1. Click Install\n2. Select Drive D:\n3. Click Install Here\n\nClose the installer after it's done to continue the setup process.\n\n"
 	
 	# Run the game using Proton with the specified Wine prefix and compatibility data path
 	STEAM_COMPAT_DATA_PATH="$STEAM_COMPAT_DATA_PATH" \
