@@ -60,7 +60,7 @@ depot_download_location_choice () {
     if [ -z "$STEAMCMD_DIR" ]; then
     	if [ -d "/run/media/mmcblk0p1" ]; then
     	    echo "SD Card detected"
-    	response=$(zenity --forms --title="Choose file download location" --text="To downgrade Fallout 4 the script needs to download ~35GB of files.\nPlease ensure you have that much space available on the preferred device (SSD/microSD Card).\n\nWhere would you like to download the files?\n" --ok-label="Internal SSD" --cancel-label="microSD Card")
+    	response=$(zenity --forms --title="Choose file download location" --width="450" --text="To downgrade Fallout 4 the script needs to download ~35GB of files.\nPlease ensure you have that much space available on the preferred device (SSD/microSD Card).\n\nWhere would you like to download the files?\n" --ok-label="Internal SSD" --cancel-label="microSD Card")
     		# Check the response
     		if [ $? -eq 0 ]; then
     		    echo "Internal SSD Selected"
@@ -104,7 +104,7 @@ update_progress() {
 
 # Read last completed step
 if [ -f "$PROGRESS_FILE" ]; then
-	response=$(zenity --question --text="Looks like the script was interrupted.\n\nDo you want to continue the process from last known step or restart again from the beginning?" --ok-label="Restart from the beginning" --cancel-label="Continue from last known step" --title="Script interrupted")
+	response=$(zenity --question --text="Looks like the script was interrupted.\n\nDo you want to continue the process from last known step or restart again from the beginning?" --width="450" --ok-label="Restart from the beginning" --cancel-label="Continue from last known step" --title="Script interrupted")
 
 	# Check the response
 	if [ $? -eq 0 ]; then
@@ -181,23 +181,23 @@ if [ "$LAST_STEP" -lt 4 ]; then
 
 	# Loop until a non-empty username is entered
 	while true; do
-	    username=$(zenity --entry --title="Steam Username" --text="Enter name of your Steam user:")
+	    username=$(zenity --entry --title="Steam Username" --width="450" --text="Enter name of your Steam user:")
 
 	    if [ -n "$username" ]; then
 		break
 	    else
-		zenity --error --title="Input Error" --text="Username cannot be empty. Please enter your Steam username."
+		zenity --error --title="Input Error" --text="Username cannot be empty. Please enter your Steam username." --width="450"
 	    fi
 	done
 
 	# Loop until a non-empty password is entered
 	while true; do
-	    password=$(zenity --password --title="Steam Password" --text="Enter your Steam user password to install required dependencies" 2>/dev/null)
+	    password=$(zenity --password --title="Steam Password" --width="450" --text="Enter your Steam user password to install required dependencies" 2>/dev/null)
 
 	    if [ -n "$password" ]; then
 		break
 	    else
-		zenity --error --title="Input Error" --text="Password cannot be empty. Please enter your Steam user password."
+		zenity --error --title="Input Error" --text="Password cannot be empty. Please enter your Steam user password." --width="450"
 	    fi
 	done
 
@@ -841,11 +841,11 @@ if [ -e "$FILE" ]; then
 		printf "${GREEN}Automatic updates for Steam version of Fallout 4 are disabled. \n\n${RED}If you ever want to re-enable automatic updates for Fallout 4, run this command in konsole:\nsudo chattr -i \"$FILE\"${NC}\n\n"
 	else
 
-        response=$(zenity --question --text="(Optional Step) Automatic updates for Steam version of Fallout 4 are enabled. \nDo you want to disable Steam automatic updates for Fallout 4? \n\n- THIS ACTION IS PERMANENT AND WILL REQUIRE YOU TO RUN A COMMAND IN CONSOLE TO REVERT IT BACK!\n- THIS COMMAND REQUIRES SUPER USER (SUDO) PRIVILEGES.\n- YOU WILL NEED TO PROVIDE SUDO PASSWORD TO PERFORM THIS STEP." --ok-label="Yes" --cancel-label="No" --title="Disable Steam Updates")
+        response=$(zenity --question --width="450" --text="(Optional Step) Automatic updates for Steam version of Fallout 4 are enabled. \nDo you want to disable Steam automatic updates for Fallout 4? \n\n- THIS ACTION IS PERMANENT AND WILL REQUIRE YOU TO RUN A COMMAND IN CONSOLE TO REVERT IT BACK!\n- THIS COMMAND REQUIRES SUPER USER (SUDO) PRIVILEGES.\n- YOU WILL NEED TO PROVIDE SUDO PASSWORD TO PERFORM THIS STEP." --ok-label="Yes" --cancel-label="No" --title="Disable Steam Updates")
 
 		if [ $? -eq 0 ]; then
 
-            response=$(zenity --question --text="If you don't know what you're doing it's recommended not to perform this action. \n\nAre you sure you want to continue?" --ok-label="Yes" --cancel-label="No" --title="Disable Steam Updates")
+            response=$(zenity --question --width="450" --text="If you don't know what you're doing it's recommended not to perform this action. \n\nAre you sure you want to continue?" --ok-label="Yes" --cancel-label="No" --title="Disable Steam Updates")
 
 			# Evaluate the response
 			if [ $? -eq 0 ]; then
@@ -863,7 +863,7 @@ if [ -e "$FILE" ]; then
 					echo "SUDO PASSWORD NOT SET"
                     echo ""
 
-                    response=$(zenity --question --text="It looks like you don't have a SUDO password set for $USER user. Do you want to set it right now?\n\n<b>You will need to type it into the Konsole window</b>" --ok-label="Yes" --cancel-label="No" --title="Disable Steam Updates")
+                    response=$(zenity --question --width="450" --text="It looks like you don't have a SUDO password set for $USER user. Do you want to set it right now?\n\n<b>You will need to type it into the Konsole window</b>" --ok-label="Yes" --cancel-label="No" --title="Disable Steam Updates")
 
 					# Evaluate the response
 					if [ $? -eq 0 ]; then
@@ -883,7 +883,7 @@ if [ -e "$FILE" ]; then
 			fi
 
 			if [ "$password_set" = "Y" ]; then
-                zenity --info --text="You will need to switch your focus on the Konsole window!\n\nPress 'OK' to proceed" --title="Disable Steam Updates"
+                zenity --info --width="450" --text="You will need to switch your focus on the Konsole window!\n\nPress 'OK' to proceed" --title="Disable Steam Updates"
 				echo "Please provide your password to disable Steam Automatic Updates for Fallout 4."
 				sudo chattr +i "$FILE"
 				printf "${GREEN}Automatic updates for Steam version of Fallout 4 are disabled. \n\n${RED}If you ever want to re-enable automatic updates for Fallout 4, run this command in Konsole:\nsudo chattr -i \"$FILE\"${NC}\n\n"
