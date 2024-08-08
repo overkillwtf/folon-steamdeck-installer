@@ -371,6 +371,12 @@ fi
 # Step 7: Move main game files
 if [ "$LAST_STEP" -lt 7 ]; then
 
+    echo "Step 7: Manual Installation of Fallout London"
+
+        # Export the variables
+        export STEAM_COMPAT_DATA_PATH
+        export WINEPREFIX
+
 	if [ -d "$PROTON_DIR" ]; then
 	    echo "Proton Experimental is installed. Continue..."
 	else
@@ -378,14 +384,17 @@ if [ "$LAST_STEP" -lt 7 ]; then
 	    exit
 	fi
 
-    echo "Step 7: Manual Installation of Fallout London"
+
     find_f4london_install_path
     if [ -d "$FALLOUT_LONDON_DIR" ]; then
 
 
 	echo "$FALLOUT_4_DIR"
 	echo "$WINEPREFIX/dosdevices"
-     
+
+        # Create the dosdevices directory if it doesn't exist
+        mkdir -p "$WINEPREFIX/dosdevices"
+
 	# Check if Fallout 4 directory exists
 	if [ ! -d "$FALLOUT_4_DIR" ]; then
 	    echo "Fallout 4 directory not found: $FALLOUT_4_DIR"
@@ -424,14 +433,11 @@ if [ "$LAST_STEP" -lt 7 ]; then
 	echo "WINEPREFIX: $WINEPREFIX"
 	echo "PROTON_DIR: $PROTON_DIR"
 	echo "GAME_EXE_PATH: $GAME_EXE_PATH"
- 
-	# Set environment variables
-	export STEAM_COMPAT_CLIENT_INSTALL_PATH="$HOME/.steam/steam"
-	export WINEPREFIX="$HOME/.steam/steam/steamapps/compatdata/377160/pfx"
-	export PROTON_DIR="$HOME/.steam/steam/steamapps/common/Proton 7.0"
-	export GAME_EXE_PATH="$HOME/games/Fallout_London/installer.exe"
 	
-	# Use the environment variables
+	# Run the game using Proton with the specified Wine prefix and compatibility data path
+	STEAM_COMPAT_DATA_PATH="$STEAM_COMPAT_DATA_PATH" \
+	STEAM_COMPAT_CLIENT_INSTALL_PATH="$STEAM_COMPAT_CLIENT_INSTALL_PATH" \
+	WINEPREFIX="$WINEPREFIX" \
 	"$PROTON_DIR/proton" run "$GAME_EXE_PATH"
 
         update_progress 7
