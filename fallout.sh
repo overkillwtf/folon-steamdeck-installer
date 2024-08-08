@@ -425,8 +425,14 @@ if [ "$LAST_STEP" -lt 7 ]; then
 	echo "PROTON_DIR: $PROTON_DIR"
 	echo "GAME_EXE_PATH: $GAME_EXE_PATH"
  
-	# Run the game using Proton with the specified Wine prefix and compatibility data path
-	STEAM_COMPAT_CLIENT_INSTALL_PATH="$STEAM_COMPAT_CLIENT_INSTALL_PATH" WINEPREFIX="$WINEPREFIX" "$PROTON_DIR/proton" run "$GAME_EXE_PATH"
+	# Set environment variables
+	export STEAM_COMPAT_CLIENT_INSTALL_PATH="$HOME/.steam/steam"
+	export WINEPREFIX="$HOME/.steam/steam/steamapps/compatdata/377160/pfx"
+	export PROTON_DIR="$HOME/.steam/steam/steamapps/common/Proton 7.0"
+	export GAME_EXE_PATH="$HOME/games/Fallout_London/installer.exe"
+	
+	# Use the environment variables
+	"$PROTON_DIR/proton" run "$GAME_EXE_PATH"
 
         update_progress 7
     fi
