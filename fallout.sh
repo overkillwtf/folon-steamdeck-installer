@@ -31,6 +31,7 @@ elif [ -e "$SD_CARD_F4_LAUNCHER_FILE" ]; then
 
 else
     echo "ERROR: Steam version of Fallout 4 is not installed on this device."
+    exit
 fi
 
 
