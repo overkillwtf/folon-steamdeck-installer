@@ -4,7 +4,6 @@
 DOWNGRADE_LIST_PATH="$HOME/Downloads/folon_downgrade.txt"
 F4LONDON_INI_URL="https://raw.githubusercontent.com/krupar101/f4london_steam_deck_ini/main/Fallout4.INI"
 PROGRESS_FILE="$HOME/.folon_patch_progress"
-PROTON_DIR="$HOME/.steam/steam/steamapps/common/Proton - Experimental"
 STEAM_COMPAT_CLIENT_INSTALL_PATH="$HOME/.steam/steam"
 HEROIC_CONFIG_FILE="$HOME/.var/app/com.heroicgameslauncher.hgl/config/heroic/gog_store/installed.json"
 STEAM_COMPAT_DATA_PATH="$HOME/.steam/steam/steamapps/compatdata/377160"
