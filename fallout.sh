@@ -377,9 +377,9 @@ if [ "$LAST_STEP" -lt 7 ]; then
 	if [ -d "$PROTON_DIR" ]; then
 	    echo "Proton Experimental is installed. Continue..."
 	else
-	    echo "Proton Experimental is not installed."
+	    echo "Proton Experimental is not installed on your SSD."
 	    echo ""
-	    echo "Go to your STEAM LIBRARY and install 'Proton Experimental'"
+	    echo "Go to your STEAM LIBRARY and install 'Proton Experimental' on your SSD."
 	    echo "After that run the script one more time and select 'Continue from last known step'"
 	    exit
 	fi
