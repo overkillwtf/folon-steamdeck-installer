@@ -10,6 +10,8 @@ HEROIC_CONFIG_FILE="$HOME/.var/app/com.heroicgameslauncher.hgl/config/heroic/gog
 STEAM_COMPAT_DATA_PATH="$HOME/.steam/steam/steamapps/compatdata/377160"
 WINEPREFIX="$STEAM_COMPAT_DATA_PATH/pfx"
 FALLOUT_4_STEAMUSER_DIR="$WINEPREFIX/drive_c/users/steamuser"
+PROTON_DIR_SSD="$HOME/.steam/steam/steamapps/common/Proton - Experimental"
+PROTON_DIR_SD="/run/media/mmcblk0p1/steamapps/common/Proton - Experimental"
 
 # Define paths to find installation directory.
 F4_LAUNCHER_NAME="Fallout4Launcher.exe"
@@ -76,6 +78,22 @@ depot_download_location_choice () {
         fi
     else
         echo "STEAMCMD_DIR is set to $STEAMCMD_DIR"
+    fi
+}
+
+check_if_proton_experimental_is_installed () {
+    if [ -e "$PROTON_DIR_SSD/proton" ]; then
+		echo "Proton Experimental is installed on Internal SSD. Continue..."
+		PROTON_DIR="$PROTON_DIR_SSD"
+    elif [ -e "$PROTON_DIR_SD/proton" ]; then
+		echo "Proton Experimental is installed on SD card. Continue..."
+		PROTON_DIR="$PROTON_DIR_SD"
+    else
+		echo "Proton Experimental is not installed."
+		echo ""
+		echo "Go to your STEAM LIBRARY and install 'Proton Experimental'"
+		echo "After that run the script one more time and select 'Continue from last known step'"
+		exit
     fi
 }
 
@@ -371,20 +389,8 @@ fi
 
 # Step 7: Move main game files
 if [ "$LAST_STEP" -lt 7 ]; then
-
     echo "Step 7: Manual Installation of Fallout London"
-
-	if [ -d "$PROTON_DIR" ]; then
-	    echo "Proton Experimental is installed. Continue..."
-	else
-	    echo "Proton Experimental is not installed on your SSD."
-	    echo ""
-	    echo "Go to your STEAM LIBRARY and install 'Proton Experimental' on your SSD."
-	    echo "After that run the script one more time and select 'Continue from last known step'"
-	    exit
-	fi
-
-
+    check_if_proton_experimental_is_installed
     find_f4london_install_path
     if [ -d "$FALLOUT_LONDON_DIR" ]; then
 
