@@ -123,18 +123,29 @@ ask_user_if_he_wants_to_update() {
 		    echo "Install selected."
 		else
 		    echo "Update selected."
-
-			response=$(zenity --question --text="Before proceeding any further open Heroic Launcher and ensure that all updates are applied to Fallout London.\nOnce done click continue." --width="450" --ok-label="Continue" --cancel-label="Cancel" --title="Check if updates are applied")
-
+            
+			response=$(zenity --question --text="Heroic Launcher will now start.\nMake sure to update Fallout London to the newest version.\n\nIf you don't have it installed make sure you are logged in to GoG and install Fallout London.\n\nOnce completed close Heroic Launcher.\n\nPress 'Continue' to start the process." --width="450" --ok-label="Continue" --cancel-label="Cancel" --title="Check if updates are applied")
+            printf "\n\nHeroic Launcher will now start.\nMake sure to update Fallout London to the newest version.\n\nIf you don't have it installed make sure you are logged in to GoG and install Fallout London.\n\nOnce completed close Heroic Launcher.\n\n"
 			# Check the response
 			if [ $? -eq 0 ]; then
 			    echo "Ok pressed"
+                check_if_heroic_is_installed_else_install
+                flatpak run com.heroicgameslauncher.hgl > /dev/null 2>&1
 			    LAST_STEP=6
 			else
 			    echo "Cancel pressed"
 			    exit
 			fi
 		fi
+}
+
+check_if_heroic_is_installed_else_install () {
+    if flatpak list --app | grep -q "com.heroicgameslauncher.hgl"; then
+        echo "Heroic Launcher is installed."
+    else
+        echo "Setting up Heroic Launcher."
+        flatpak install flathub com.heroicgameslauncher.hgl
+    fi
 }
 
 # Function to update progress
@@ -166,12 +177,7 @@ update_progress() {
 
 # Step 1: Check if Heroic Launcher is already installed
 if [ "$LAST_STEP" -lt 1 ]; then
-    if flatpak list --app | grep -q "com.heroicgameslauncher.hgl"; then
-        echo "Heroic Launcher is installed."
-    else
-        echo "Setting up Heroic Launcher."
-        flatpak install flathub com.heroicgameslauncher.hgl
-    fi
+    check_if_heroic_is_installed_else_install
     update_progress 1
 fi
 
