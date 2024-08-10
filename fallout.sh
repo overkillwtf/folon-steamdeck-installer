@@ -110,31 +110,59 @@ cleanup() {
     pkill -f zenity
     exit 1
 }
-
-
 trap cleanup SIGINT SIGTERM
+
+
+ask_user_if_he_wants_to_update() {
+	#Ask what to do if the progress file does not exist.
+	    
+		response=$(zenity --question --text="The script allows you to perform 2 actions.\n\n1. Install Fallout London\n2. Update Fallout London to a new version\n\nWhich one do you want to perform?" --width="450" --ok-label="Install" --cancel-label="Update" --title="Choose action")
+
+		# Check the response
+		if [ $? -eq 0 ]; then
+		    echo "Install selected."
+		else
+		    echo "Update selected."
+
+			response=$(zenity --question --text="Before proceeding any further open Heroic Launcher and ensure that all updates are applied to Fallout London.\nOnce done click continue." --width="450" --ok-label="Continue" --cancel-label="Cancel" --title="Check if updates are applied")
+
+			# Check the response
+			if [ $? -eq 0 ]; then
+			    echo "Ok pressed"
+			    LAST_STEP=6
+			else
+			    echo "Cancel pressed"
+			    exit
+			fi
+		fi
+}
 
 # Function to update progress
 update_progress() {
     echo "$1" > "$PROGRESS_FILE"
 }
 
-# Read last completed step
-if [ -f "$PROGRESS_FILE" ]; then
-	response=$(zenity --question --text="Looks like the script was interrupted.\n\nDo you want to continue the process from last known step or restart again from the beginning?" --width="450" --ok-label="Restart from the beginning" --cancel-label="Continue from last known step" --title="Script interrupted")
+    # Read last completed step
+    if [ -f "$PROGRESS_FILE" ]; then
+        response=$(zenity --question --text="Looks like the script was interrupted.\n\nDo you want to continue the process from last known step or restart again from the beginning?" --width="450" --ok-label="Restart from the beginning" --cancel-label="Continue from last known step" --title="Script interrupted")
 
-	# Check the response
-	if [ $? -eq 0 ]; then
-	    echo "Restart the script from beginning"
-	    rm -f "$PROGRESS_FILE"
-	    LAST_STEP=0
-	else
-	    echo "Continue from last known step."
-	    LAST_STEP=$(cat "$PROGRESS_FILE")
-	fi
-else
-    LAST_STEP=0
-fi
+        # Check the response
+        if [ $? -eq 0 ]; then
+            echo "Restart the script from beginning"
+            rm -f "$PROGRESS_FILE"
+            LAST_STEP=0
+            ask_user_if_he_wants_to_update
+        else
+            echo "Continue from last known step."
+            LAST_STEP=$(cat "$PROGRESS_FILE")
+        fi
+    else
+        LAST_STEP=0
+        ask_user_if_he_wants_to_update
+    fi
+
+
+
 
 # Step 1: Check if Heroic Launcher is already installed
 if [ "$LAST_STEP" -lt 1 ]; then
@@ -153,20 +181,20 @@ sleep 1
 if [ "$LAST_STEP" -lt 2 ]; then
     echo "Setting up downgrade-list..."
     cat <<EOL > "$DOWNGRADE_LIST_PATH"
-download_depot 377160 377161 7497069378349273908
 download_depot 377160 377162 5847529232406005096
-download_depot 377160 377163 5819088023757897745
-download_depot 377160 377164 2178106366609958945
-download_depot 377160 435880 1255562923187931216
 download_depot 377160 435870 1691678129192680960
 download_depot 377160 435871 5106118861901111234
-download_depot 377160 435881 1207717296920736193
+download_depot 377160 435880 1255562923187931216
 download_depot 377160 435882 8482181819175811242
-download_depot 480630 5527412439359349504
-download_depot 480631 6588493486198824788
-download_depot 393885 5000262035721758737
-download_depot 490650 4873048792354485093
-download_depot 393895 7677765994120765493
+download_depot 377160 480630 5527412439359349504
+download_depot 377160 480631 6588493486198824788
+download_depot 377160 393885 5000262035721758737
+download_depot 377160 393895 7677765994120765493
+download_depot 377160 435881 1207717296920736193
+download_depot 377160 377164 2178106366609958945
+download_depot 377160 490650 4873048792354485093
+download_depot 377160 377161 7497069378349273908
+download_depot 377160 377163 5819088023757897745
 quit
 EOL
     update_progress 2
@@ -224,108 +252,123 @@ if [ "$LAST_STEP" -lt 4 ]; then
     "$STEAMCMD_DIR/steamcmd.sh" +login "$username" "$password" +runscript "$DOWNGRADE_LIST_PATH"
 
 	expected_files=(
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_435881/Data/DLCCoast - Geometry.csg"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_435881/Data/DLCCoast - Textures.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_435881/Data/DLCCoast - Main.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_435881/Data/DLCCoast.cdx"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_435871/Data/DLCRobot - Voices_en.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_435871/Data/DLCRobot.esm"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377162/Fallout4.exe"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_435870/Data/DLCRobot - Main.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_435870/Data/DLCRobot - Textures.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_435870/Data/DLCRobot - Geometry.csg"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_435870/Data/DLCRobot.cdx"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_435880/Data/DLCworkshop01.esm"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_435880/Data/DLCworkshop01 - Textures.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_435880/Data/DLCworkshop01 - Geometry.csg"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_435880/Data/DLCworkshop01 - Main.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_435880/Data/DLCworkshop01.cdx"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377164/Fallout4_Default.ini"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377164/Data/Video/Intro.bk2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377164/Data/Video/Endgame_MALE_A.bk2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377164/Data/Video/Endgame_FEMALE_A.bk2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377164/Data/Video/Endgame_FEMALE_B.bk2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377164/Data/Video/Endgame_MALE_B.bk2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377164/Data/Fallout4 - Voices.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377161/Data/Fallout4 - Sounds.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377161/Data/Fallout4 - Meshes.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377161/Data/Video/INTELLIGENCE.bk2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377161/Data/Video/ENDURANCE.bk2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377161/Data/Video/MainMenuLoop.bk2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377161/Data/Video/STRENGTH.bk2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377161/Data/Video/LUCK.bk2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377161/Data/Video/PERCEPTION.bk2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377161/Data/Video/CHARISMA.bk2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377161/Data/Video/GameIntro_V3_B.bk2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377161/Data/Video/AGILITY.bk2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377161/installscript.vdf"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_435882/Data/DLCCoast - Voices_en.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_435882/Data/DLCCoast.esm"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/bink2w64.dll"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/GFSDK_SSAO_D3D11.win64.dll"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/flexExtRelease_x64.dll"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/nvToolsExt64_1.dll"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Fallout4/Fallout4Prefs.ini"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Low.ini"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/steam_api64.dll"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Fallout4Launcher.exe"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/flexRelease_x64.dll"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Ultra.ini"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/nvdebris.txt"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Textures9.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4038-HorseArmor - Main.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Shaders.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Textures2.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccFSVFO4002-MidCenturyModern - Textures.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Textures5.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4003-PipBoy(Camo01) - Textures.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - MeshesExtra.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Textures4.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4003-PipBoy(Camo01) - Main.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Animations.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4006-PipBoy(Chrome) - Main.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccFRSFO4001-HandmadeShotgun - Textures.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4004-PipBoy(Camo02) - Textures.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4016-Prey - Main.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Startup.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4020-PowerArmorSkin(Black) - Main.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Meshes.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Textures1.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Nvflex.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4019-ChineseStealthArmor - Textures.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccFSVFO4001-ModularMilitaryBackpack - Textures.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4006-PipBoy(Chrome) - Textures.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccFSVFO4002-MidCenturyModern - Main.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4020-PowerArmorSkin(Black) - Textures.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Materials.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Textures6.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Interface.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4019-ChineseStealthArmor - Main.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Geometry.csg"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccFRSFO4001-HandmadeShotgun - Main.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4004-PipBoy(Camo02) - Main.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4018-GaussRiflePrototype - Main.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccFSVFO4001-ModularMilitaryBackpack - Main.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4001-PipBoy(Black) - Main.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Misc.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4001-PipBoy(Black) - Textures.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4044-HellfirePowerArmor - Main.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4.cdx"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4038-HorseArmor - Textures.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Textures3.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4016-Prey - Textures.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4.esm"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4018-GaussRiflePrototype - Textures.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Textures8.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Textures7.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4044-HellfirePowerArmor - Textures.ba2"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/GFSDK_GodraysLib.x64.dll"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Medium.ini"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/msvcr110.dll"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Fallout4.ccc"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/msvcp110.dll"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/cudart64_75.dll"
-	"$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/High.ini"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_480631/Data/DLCworkshop03 - Main.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_480631/Data/DLCworkshop03.cdx"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_480631/Data/DLCworkshop03 - Geometry.csg"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_480631/Data/DLCworkshop03 - Textures.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_480630/Data/DLCworkshop02.esm"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_480630/Data/DLCworkshop02 - Textures.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_480630/Data/DLCworkshop02 - Main.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_435881/Data/DLCCoast - Geometry.csg"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_435881/Data/DLCCoast - Textures.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_435881/Data/DLCCoast - Main.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_435881/Data/DLCCoast.cdx"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_490650/Data/DLCNukaWorld - Main.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_490650/Data/DLCNukaWorld - Geometry.csg"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_490650/Data/DLCNukaWorld - Textures.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_490650/Data/DLCNukaWorld.cdx"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_435871/Data/DLCRobot - Voices_en.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_435871/Data/DLCRobot.esm"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377162/Fallout4.exe"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_435870/Data/DLCRobot - Main.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_435870/Data/DLCRobot - Textures.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_435870/Data/DLCRobot - Geometry.csg"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_435870/Data/DLCRobot.cdx"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_435880/Data/DLCworkshop01.esm"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_435880/Data/DLCworkshop01 - Textures.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_435880/Data/DLCworkshop01 - Geometry.csg"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_435880/Data/DLCworkshop01 - Main.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_435880/Data/DLCworkshop01.cdx"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_393895/Data/DLCNukaWorld.esm"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_393895/Data/DLCNukaWorld - Voices_en.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377164/Fallout4_Default.ini"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377164/Data/Video/Intro.bk2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377164/Data/Video/Endgame_MALE_A.bk2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377164/Data/Video/Endgame_FEMALE_A.bk2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377164/Data/Video/Endgame_FEMALE_B.bk2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377164/Data/Video/Endgame_MALE_B.bk2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377164/Data/Fallout4 - Voices.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377161/Data/Fallout4 - Sounds.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377161/Data/Fallout4 - Meshes.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377161/Data/Video/INTELLIGENCE.bk2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377161/Data/Video/ENDURANCE.bk2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377161/Data/Video/MainMenuLoop.bk2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377161/Data/Video/STRENGTH.bk2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377161/Data/Video/LUCK.bk2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377161/Data/Video/PERCEPTION.bk2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377161/Data/Video/CHARISMA.bk2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377161/Data/Video/GameIntro_V3_B.bk2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377161/Data/Video/AGILITY.bk2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377161/installscript.vdf"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_435882/Data/DLCCoast - Voices_en.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_435882/Data/DLCCoast.esm"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/bink2w64.dll"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/GFSDK_SSAO_D3D11.win64.dll"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/flexExtRelease_x64.dll"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/nvToolsExt64_1.dll"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Fallout4/Fallout4Prefs.ini"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Low.ini"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/steam_api64.dll"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Fallout4Launcher.exe"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/flexRelease_x64.dll"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Ultra.ini"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/nvdebris.txt"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Textures9.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4038-HorseArmor - Main.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Shaders.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Textures2.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccFSVFO4002-MidCenturyModern - Textures.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Textures5.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4003-PipBoy(Camo01) - Textures.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - MeshesExtra.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Textures4.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4003-PipBoy(Camo01) - Main.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Animations.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4006-PipBoy(Chrome) - Main.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccFRSFO4001-HandmadeShotgun - Textures.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4004-PipBoy(Camo02) - Textures.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4016-Prey - Main.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Startup.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4020-PowerArmorSkin(Black) - Main.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Meshes.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Textures1.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Nvflex.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4019-ChineseStealthArmor - Textures.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccFSVFO4001-ModularMilitaryBackpack - Textures.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4006-PipBoy(Chrome) - Textures.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccFSVFO4002-MidCenturyModern - Main.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4020-PowerArmorSkin(Black) - Textures.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Materials.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Textures6.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Interface.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4019-ChineseStealthArmor - Main.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Geometry.csg"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccFRSFO4001-HandmadeShotgun - Main.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4004-PipBoy(Camo02) - Main.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4018-GaussRiflePrototype - Main.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccFSVFO4001-ModularMilitaryBackpack - Main.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4001-PipBoy(Black) - Main.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Misc.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4001-PipBoy(Black) - Textures.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4044-HellfirePowerArmor - Main.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4.cdx"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4038-HorseArmor - Textures.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Textures3.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4016-Prey - Textures.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4.esm"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4018-GaussRiflePrototype - Textures.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Textures8.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/Fallout4 - Textures7.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Data/ccBGSFO4044-HellfirePowerArmor - Textures.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/GFSDK_GodraysLib.x64.dll"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Medium.ini"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/msvcr110.dll"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/Fallout4.ccc"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/msvcp110.dll"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/cudart64_75.dll"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_377163/High.ini"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_393885/Data/DLCworkshop03 - Voices_en.ba2"
+    "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/depot_393885/Data/DLCworkshop03.esm"
 	)
 
 	# Check if all expected files exist
@@ -373,13 +416,13 @@ fi
 if [ "$LAST_STEP" -lt 6 ]; then
     find_f4london_install_path
     if [ ! -d "$FALLOUT_LONDON_DIR" ]; then
-      text="<b>Please install Fallout London from Heroic Launcher</b>\n\n1. Go to 'Log in' in the left Heroic Launcher pane.\n2. Login to GoG\n3. Go to your library and install Fallout London.\n\nOnce Fallout London is installed - Close Heroic Launcher to continue.\n\nPress 'OK' to start Heroic Launcher and close this message."
+      text="<b>Please install Fallout London from Heroic Launcher</b>\n\n1. Go to 'Log in' in the left Heroic Launcher pane.\n2. Login to GoG\n3. Go to your library and install Fallout London.\n4. Once Fallout London is installed - Close Heroic Launcher to continue.\n\nPress 'OK' to start Heroic Launcher and close this message."
       zenity --info \
              --title="Overkill" \
              --width="450" \
              --text="$text" 2>/dev/null
       echo ""
-      printf "Please install Fallout London from Heroic Launcher\n\n1. Go to 'Log in' in the left Heroic Launcher pane.\n2. Login to GoG\n3. Go to your library and install Fallout London.\n\nOnce Fallout London is installed - Close Heroic Launcher to continue.\n"
+      printf "Please install Fallout London from Heroic Launcher\n\n1. Go to 'Log in' in the left Heroic Launcher pane.\n2. Login to GoG\n3. Go to your library and install Fallout London.\n4. Once Fallout London is installed - Close Heroic Launcher to continue.\n"
       echo "" 
       flatpak run com.heroicgameslauncher.hgl > /dev/null 2>&1
     fi
@@ -393,8 +436,9 @@ if [ "$LAST_STEP" -lt 7 ]; then
     find_f4london_install_path
     if [ -d "$FALLOUT_LONDON_DIR" ]; then
 
-        zenity --info --title="Manual Installation" --width="450" --text="GoG installer for Fallout London will now launch.\n\n1. Click Install\n2. Select Drive F:\n3. Click Install Here\n4. Close the installer after it's done to continue the setup process.\n\nMake sure to disconnect all external drives other than Internal SSD and microSD card before you proceed.\n\nClick 'OK' in this window to start the process." 2>/dev/null
-	printf "\n\nGoG installer for Fallout London will now launch.\n\n1. Click Install\n2. Select Drive F:\n3. Click Install Here\n4. Close the installer after it's done to continue the setup process.\n\nMake sure to disconnect all external drives other than Internal SSD and microSD card before you proceed."
+        zenity --info --title="Manual Installation" --width="450" --text="GoG installer for Fallout London will now launch.\n\n1. Click 'Install' or 'Update' if you have both options\n2. Select Drive F:\n3. Click Install Here\n4. Close the installer after it's done to continue the setup process.\n\nMake sure to disconnect all external drives other than Internal SSD and microSD card before you proceed.\n\nClick 'OK' in this window to start the process." 2>/dev/null
+	    
+        printf "\n\nGoG installer for Fallout London will now launch.\n\n1. Click 'Install' or 'Update' if you have both options\n2. Select Drive F:\n3. Click Install Here\n4. Close the installer after it's done to continue the setup process.\n\nMake sure to disconnect all external drives other than Internal SSD and microSD card before you proceed.\n\n"
 
         # Export the variables
         export STEAM_COMPAT_DATA_PATH
@@ -420,11 +464,14 @@ if [ "$LAST_STEP" -lt 7 ]; then
             exit
         fi
 	
-	# Run the game using Proton with the specified Wine prefix and compatibility data path
+	    # Run the game using Proton with the specified Wine prefix and compatibility data path
         killall wineserver
         "$PROTON_DIR/proton" run "$GAME_EXE_PATH"
 
         update_progress 7
+    else
+    echo "Fallout London is not recognized to be installed in Heroic Launcher.\nStart the Installation process from the beginning or install Heroic Launcher and Fallout London manually."
+    exit
     fi
 fi
 
