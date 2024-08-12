@@ -16,6 +16,7 @@ PROTON_DIR_SD="/run/media/mmcblk0p1/steamapps/common/Proton - Experimental"
 F4_LAUNCHER_NAME="Fallout4Launcher.exe"
 SSD_F4_LAUNCHER_FILE="$HOME/.steam/steam/steamapps/common/Fallout 4/$F4_LAUNCHER_NAME"
 SD_CARD_F4_LAUNCHER_FILE="/run/media/mmcblk0p1/steamapps/common/Fallout 4/$F4_LAUNCHER_NAME"
+SSD_F4_LAUNCHER_FILE_ALT="/run/media/deck/SD Card/steamapps/common/Fallout 4/$F4_LAUNCHER_NAME"
 
 # Check where Steam Version of Fallout 4 is installed.
 if [ -e "$SSD_F4_LAUNCHER_FILE" ]; then
@@ -29,7 +30,12 @@ elif [ -e "$SD_CARD_F4_LAUNCHER_FILE" ]; then
 
         STEAM_APPMANIFEST_PATH="/run/media/mmcblk0p1/steamapps/appmanifest_377160.acf"
         FALLOUT_4_DIR="/run/media/mmcblk0p1/steamapps/common/Fallout 4"
+	
+elif [ -e "$SSD_F4_LAUNCHER_FILE_ALT" ]; then
+    echo "Fallout 4 recognized to be installed on SD Card in alternative location /run/media/deck/SD Card/"
 
+        STEAM_APPMANIFEST_PATH="/run/media/deck/SD Card/steamapps/appmanifest_377160.acf"
+        FALLOUT_4_DIR="/run/media/deck/SD Card/steamapps/common/Fallout 4"
 else
     echo "ERROR: Steam version of Fallout 4 is not installed on this device."
     exit
