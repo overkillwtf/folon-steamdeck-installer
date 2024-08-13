@@ -11,6 +11,8 @@ WINEPREFIX="$STEAM_COMPAT_DATA_PATH/pfx"
 FALLOUT_4_STEAMUSER_DIR="$WINEPREFIX/drive_c/users/steamuser"
 PROTON_DIR_SSD="$HOME/.steam/steam/steamapps/common/Proton - Experimental"
 PROTON_DIR_SD="/run/media/mmcblk0p1/steamapps/common/Proton - Experimental"
+PROTON_DIR_SD_ALT="/run/media/deck/SD Card/steamapps/common/Proton - Experimental"
+
 
 # Define paths to find installation directory.
 F4_LAUNCHER_NAME="Fallout4Launcher.exe"
@@ -65,7 +67,7 @@ GAME_EXE_PATH="$FALLOUT_LONDON_DIR/installer.exe"
 depot_download_location_choice () {
 # Check if STEAMCMD_DIR is set
     if [ -z "$STEAMCMD_DIR" ]; then
-    	if [ -d "/run/media/mmcblk0p1" ]; then
+        if [ -d "/run/media/mmcblk0p1" ] || [ -d "/run/media/deck/SD Card" ]; then
     	    echo "SD Card detected"
     	response=$(zenity --forms --title="Choose file download location" --width="450" --text="To downgrade Fallout 4 the script needs to download ~35GB of files.\nPlease ensure you have that much space available on the preferred device (SSD/microSD Card).\n\nWhere would you like to download the files?\n" --ok-label="Internal SSD" --cancel-label="microSD Card")
     		# Check the response
@@ -73,8 +75,7 @@ depot_download_location_choice () {
     		    echo "Internal SSD Selected"
                     STEAMCMD_DIR="$HOME/Downloads/SteamCMD"
     		else
-    		    echo "microSD Card Selected"
-    		    STEAMCMD_DIR="/run/media/mmcblk0p1/Downloads/SteamCMD"
+                set_sd_card_paths
     		fi
     	else
     	    echo "SD Card not detected - Default to Internal SSD"
@@ -93,6 +94,9 @@ check_if_proton_experimental_is_installed () {
     elif [ -e "$PROTON_DIR_SD/proton" ]; then
 		echo "Proton Experimental is installed on SD card. Continue..."
 		PROTON_DIR="$PROTON_DIR_SD"
+    elif [ -e "$PROTON_DIR_SD_ALT/proton" ]; then
+		echo "Proton Experimental is installed on SD card in alternative location. Continue..."
+		PROTON_DIR="$PROTON_DIR_SD_ALT"
     else
 		echo "Proton Experimental is not installed."
 		echo ""
@@ -154,10 +158,28 @@ check_if_heroic_is_installed_else_install () {
     fi
 }
 
+set_sd_card_paths () {
+echo "microSD Card Selected"
+
+    if [ -d "/run/media/mmcblk0p1" ]; then 
+        echo "set the path to the default sd card location"
+        STEAMCMD_DIR="/run/media/mmcblk0p1/Downloads/SteamCMD"
+    elif [ -d "/run/media/deck/SD Card" ]; then
+        echo "set the path to the alternative sd card location"
+        STEAMCMD_DIR="/run/media/deck/SD Card/Downloads/SteamCMD"
+    else
+        echo "ERROR: This error should never be shown. If it is it means that microsd card was wrongly detected in depot_download_location_choice function."
+    fi
+
+}
+
 # Function to update progress
 update_progress() {
     echo "$1" > "$PROGRESS_FILE"
 }
+
+
+
 
     # Read last completed step
     if [ -f "$PROGRESS_FILE" ]; then
@@ -177,6 +199,7 @@ update_progress() {
         LAST_STEP=0
         ask_user_if_he_wants_to_update
     fi
+
 
 
 
