@@ -471,9 +471,9 @@ if [ "$LAST_STEP" -lt 7 ]; then
     find_f4london_install_path
     if [ -d "$FALLOUT_LONDON_DIR" ]; then
 
-        zenity --info --title="Manual Installation" --width="450" --text="GoG installer for Fallout London will now launch.\n\n1. Click 'Install' or 'Update' if you have both options\n2. Select Drive F:\n3. Click Install Here\n4. Close the installer after it's done to continue the setup process.\n\nMake sure to disconnect all external drives other than Internal SSD and microSD card before you proceed.\n\nClick 'OK' in this window to start the process." 2>/dev/null
+        zenity --info --title="Manual Installation" --width="450" --text="GoG installer for Fallout London will now launch.\n\n1. Click 'Install' or 'Update' if you have both options\n2. Select Drive H:\n3. Click Install Here\n4. Close the installer after it's done to continue the setup process.\n\nMake sure to disconnect all external drives other than Internal SSD and microSD card before you proceed.\n\nClick 'OK' in this window to start the process." 2>/dev/null
 	    
-        printf "\n\nGoG installer for Fallout London will now launch.\n\n1. Click 'Install' or 'Update' if you have both options\n2. Select Drive F:\n3. Click Install Here\n4. Close the installer after it's done to continue the setup process.\n\nMake sure to disconnect all external drives other than Internal SSD and microSD card before you proceed.\n\n"
+        printf "\n\nGoG installer for Fallout London will now launch.\n\n1. Click 'Install' or 'Update' if you have both options\n2. Select Drive H:\n3. Click Install Here\n4. Close the installer after it's done to continue the setup process.\n\nMake sure to disconnect all external drives other than Internal SSD and microSD card before you proceed.\n\n"
 
         # Export the variables
         export STEAM_COMPAT_DATA_PATH
@@ -484,18 +484,18 @@ if [ "$LAST_STEP" -lt 7 ]; then
         mkdir -p "$WINEPREFIX/dosdevices"
 
         # Remove existing symlink if it exists
-        if [ -L "$WINEPREFIX/dosdevices/f:" ]; then
-            rm "$WINEPREFIX/dosdevices/f:"
+        if [ -L "$WINEPREFIX/dosdevices/h:" ]; then
+            rm "$WINEPREFIX/dosdevices/h:"
         fi
 
         # Create the new symlink
-        ln -s "$FALLOUT_4_DIR" "$WINEPREFIX/dosdevices/f:"
+        ln -s "$FALLOUT_4_DIR" "$WINEPREFIX/dosdevices/h:"
 
         # Verify the symlink
-        if [ -L "$WINEPREFIX/dosdevices/f:" ]; then
-            echo "Drive F: successfully created pointing to $FALLOUT_4_DIR"
+        if [ -L "$WINEPREFIX/dosdevices/h:" ]; then
+            echo "Drive H: successfully created pointing to $FALLOUT_4_DIR"
         else
-            echo "Failed to create Drive F:"
+            echo "Failed to create Drive H:"
             exit
         fi
 	
