@@ -1,48 +1,45 @@
 #!/bin/bash
+echo "---------------------"
+echo ""
+echo "Fallout London installation script for Steam Deck by krupar"
+echo ""
+echo "---------------------"
+sleep 1
+echo "---------------------"
+echo ""
+echo "Published by Overkill.wtf"
+echo ""
+echo "---------------------"
+sleep 1
 
 # Global Paths
 DOWNGRADE_LIST_PATH="$HOME/Downloads/folon_downgrade.txt"
 F4LONDON_INI_URL="https://raw.githubusercontent.com/krupar101/f4london_steam_deck_ini/main/Fallout4.INI"
 PROGRESS_FILE="$HOME/.folon_patch_progress"
+F4_VERSION_SELECTION_FILE="$HOME/.folon_f4_version_selected"
 STEAM_COMPAT_CLIENT_INSTALL_PATH="$HOME/.steam/steam"
 HEROIC_CONFIG_FILE="$HOME/.var/app/com.heroicgameslauncher.hgl/config/heroic/gog_store/installed.json"
-STEAM_COMPAT_DATA_PATH="$HOME/.steam/steam/steamapps/compatdata/377160"
-WINEPREFIX="$STEAM_COMPAT_DATA_PATH/pfx"
-FALLOUT_4_STEAMUSER_DIR="$WINEPREFIX/drive_c/users/steamuser"
+HEROIC_PREFIX_FILE="$HOME/.var/app/com.heroicgameslauncher.hgl/config/heroic/GamesConfig/1998527297.json"
 PROTON_DIR_SSD="$HOME/.steam/steam/steamapps/common/Proton - Experimental"
-PROTON_DIR_SD="/run/media/mmcblk0p1/steamapps/common/Proton - Experimental"
-PROTON_DIR_SD_ALT="/run/media/deck/SD Card/steamapps/common/Proton - Experimental"
-
 
 # Define paths to find installation directory.
 F4_LAUNCHER_NAME="Fallout4Launcher.exe"
 SSD_F4_LAUNCHER_FILE="$HOME/.steam/steam/steamapps/common/Fallout 4/$F4_LAUNCHER_NAME"
-SD_CARD_F4_LAUNCHER_FILE="/run/media/mmcblk0p1/steamapps/common/Fallout 4/$F4_LAUNCHER_NAME"
-SSD_F4_LAUNCHER_FILE_ALT="/run/media/deck/SD Card/steamapps/common/Fallout 4/$F4_LAUNCHER_NAME"
 
-# Check where Steam Version of Fallout 4 is installed.
-if [ -e "$SSD_F4_LAUNCHER_FILE" ]; then
-    echo "Fallout 4 recognized to be installed on Internal SSD"
 
-        STEAM_APPMANIFEST_PATH="$HOME/.steam/steam/steamapps/appmanifest_377160.acf"
-        FALLOUT_4_DIR="$HOME/.steam/steam/steamapps/common/Fallout 4"
+check_if_sd_card_is_mounted_and_set_proton_f4_paths () {
+    #Function to automatically detect the SD card mount location and set Proton Directory and Fallout 4 launcher Directory for installation detection
+    SD_MOUNT=$(findmnt -rn -o TARGET | grep '/run/media')
 
-elif [ -e "$SD_CARD_F4_LAUNCHER_FILE" ]; then
-    echo "Fallout 4 recognized to be installed on SD Card"
+    if [ -n "$SD_MOUNT" ]; then
+        echo "SD Card is mounted at: $SD_MOUNT"
+        PROTON_DIR_SD="$SD_MOUNT/steamapps/common/Proton - Experimental"
+        SD_CARD_F4_LAUNCHER_FILE="$SD_MOUNT/steamapps/common/Fallout 4/$F4_LAUNCHER_NAME"
+    else
+        echo "SD Card is not mounted."
+    fi
 
-        STEAM_APPMANIFEST_PATH="/run/media/mmcblk0p1/steamapps/appmanifest_377160.acf"
-        FALLOUT_4_DIR="/run/media/mmcblk0p1/steamapps/common/Fallout 4"
-	
-elif [ -e "$SSD_F4_LAUNCHER_FILE_ALT" ]; then
-    echo "Fallout 4 recognized to be installed on SD Card in alternative location /run/media/deck/SD Card/"
-
-        STEAM_APPMANIFEST_PATH="/run/media/deck/SD Card/steamapps/appmanifest_377160.acf"
-        FALLOUT_4_DIR="/run/media/deck/SD Card/steamapps/common/Fallout 4"
-else
-    echo "ERROR: Steam version of Fallout 4 is not installed on this device."
-    exit
-fi
-
+}
 
 find_f4london_install_path() {
 # Check if the file exists
@@ -57,6 +54,7 @@ install_path=$(jq -r '.installed[] | select(.install_path | contains("Fallout Lo
 if [[ -n "$install_path" ]]; then
     echo "Fallout London installation path found."
     FALLOUT_LONDON_DIR="$install_path"
+    echo "$FALLOUT_LONDON_DIR"
 else
     echo "Fallout London not recognized to be installed in Heroic Launcher."
     FALLOUT_LONDON_DIR="$HOME/Games/Heroic/Fallout London"
@@ -64,18 +62,38 @@ fi
 GAME_EXE_PATH="$FALLOUT_LONDON_DIR/installer.exe"
 }
 
+find_fallout4_heroic_install_path () {
+# Check if the file exists
+if [[ ! -f "$HEROIC_CONFIG_FILE" ]]; then
+    echo "Fallout 4 not recognized to be installed in Heroic Launcher."
+fi
+
+# Search for the install_path for the game "Fallout London"
+install_path=$(jq -r '.installed[] | select(.install_path | contains("Fallout 4")) | .install_path' "$HEROIC_CONFIG_FILE")
+
+# Check if the install_path was found
+if [[ -n "$install_path" ]]; then
+    echo "Fallout 4 installation path found."
+    FALLOUT_4_DIR="$install_path"
+else
+    echo "Fallout 4 not recognized to be installed in Heroic Launcher. Install it and try again."
+    exit
+fi
+}
+
 depot_download_location_choice () {
 # Check if STEAMCMD_DIR is set
+    check_if_sd_card_is_mounted_and_set_proton_f4_paths
     if [ -z "$STEAMCMD_DIR" ]; then
-        if [ -d "/run/media/mmcblk0p1" ] || [ -d "/run/media/deck/SD Card" ]; then
-    	    echo "SD Card detected"
+        if [ -d "$SD_MOUNT" ]; then
+    	    echo "SD Card available"
     	response=$(zenity --forms --title="Choose file download location" --width="450" --text="To downgrade Fallout 4 the script needs to download ~35GB of files.\nPlease ensure you have that much space available on the preferred device (SSD/microSD Card).\n\nWhere would you like to download the files?\n" --ok-label="Internal SSD" --cancel-label="microSD Card")
     		# Check the response
     		if [ $? -eq 0 ]; then
     		    echo "Internal SSD Selected"
                     STEAMCMD_DIR="$HOME/Downloads/SteamCMD"
     		else
-                set_sd_card_paths
+                set_sd_card_paths_4_steamcmddir
     		fi
     	else
     	    echo "SD Card not detected - Default to Internal SSD"
@@ -88,15 +106,13 @@ depot_download_location_choice () {
 }
 
 check_if_proton_experimental_is_installed () {
+    check_if_sd_card_is_mounted_and_set_proton_f4_paths
     if [ -e "$PROTON_DIR_SSD/proton" ]; then
 		echo "Proton Experimental is installed on Internal SSD. Continue..."
 		PROTON_DIR="$PROTON_DIR_SSD"
     elif [ -e "$PROTON_DIR_SD/proton" ]; then
 		echo "Proton Experimental is installed on SD card. Continue..."
 		PROTON_DIR="$PROTON_DIR_SD"
-    elif [ -e "$PROTON_DIR_SD_ALT/proton" ]; then
-		echo "Proton Experimental is installed on SD card in alternative location. Continue..."
-		PROTON_DIR="$PROTON_DIR_SD_ALT"
     else
 		echo "Proton Experimental is not installed."
 		echo ""
@@ -124,8 +140,10 @@ trap cleanup SIGINT SIGTERM
 
 
 ask_user_if_he_wants_to_update() {
+
+    if [ "$F4_VERSION" == "STEAM" ]; then
+
 	#Ask what to do if the progress file does not exist.
-	    
 		response=$(zenity --question --text="The script allows you to perform 2 actions.\n\n1. Install Fallout London\n2. Update Fallout London to a new version\n\nWhich one do you want to perform?" --width="450" --ok-label="Install" --cancel-label="Update" --title="Choose action")
 
 		# Check the response
@@ -141,12 +159,39 @@ ask_user_if_he_wants_to_update() {
 			    echo "Ok pressed"
                 check_if_heroic_is_installed_else_install
                 flatpak run com.heroicgameslauncher.hgl > /dev/null 2>&1
-			    LAST_STEP=6
+			    LAST_STEP=5
 			else
 			    echo "Cancel pressed"
 			    exit
 			fi
 		fi
+
+
+    elif [ "$F4_VERSION" == "GOG" ]; then
+    check_if_heroic_is_installed_else_install
+	LAST_STEP=5
+	#Ask what to do if the progress file does not exist.
+		response=$(zenity --question --text="The script allows you to perform 2 actions.\n\n1. Install Fallout London\n2. Update Fallout London to a new version\n\nWhich one do you want to perform?" --width="450" --ok-label="Install" --cancel-label="Update" --title="Choose action")
+		# Check the response
+		if [ $? -eq 0 ]; then
+		    echo "Install selected."
+		else
+		    echo "Update selected."
+            
+			response=$(zenity --question --text="Heroic Launcher will now start.\nMake sure to update Fallout London to the newest version.\n\nIf you don't have it installed make sure you are logged in to GoG and install Fallout London.\n\nOnce completed close Heroic Launcher.\n\nPress 'Continue' to start the process." --width="450" --ok-label="Continue" --cancel-label="Cancel" --title="Check if updates are applied")
+            printf "\n\nHeroic Launcher will now start.\nMake sure to update Fallout London to the newest version.\n\nIf you don't have it installed make sure you are logged in to GoG and install Fallout London.\n\nOnce completed close Heroic Launcher.\n\n"
+			# Check the response
+			if [ $? -eq 0 ]; then
+			    echo "Ok pressed"
+                
+                flatpak run com.heroicgameslauncher.hgl > /dev/null 2>&1
+			else
+			    echo "Cancel pressed"
+			    exit
+			fi
+		fi
+
+    fi
 }
 
 check_if_heroic_is_installed_else_install () {
@@ -158,19 +203,14 @@ check_if_heroic_is_installed_else_install () {
     fi
 }
 
-set_sd_card_paths () {
+set_sd_card_paths_4_steamcmddir () {
 echo "microSD Card Selected"
-
-    if [ -d "/run/media/mmcblk0p1" ]; then 
+    if [ -d "$SD_MOUNT" ]; then 
         echo "set the path to the default sd card location"
-        STEAMCMD_DIR="/run/media/mmcblk0p1/Downloads/SteamCMD"
-    elif [ -d "/run/media/deck/SD Card" ]; then
-        echo "set the path to the alternative sd card location"
-        STEAMCMD_DIR="/run/media/deck/SD Card/Downloads/SteamCMD"
+        STEAMCMD_DIR="$SD_MOUNT/Downloads/SteamCMD"
     else
         echo "ERROR: This error should never be shown. If it is it means that microsd card was wrongly detected in depot_download_location_choice function."
     fi
-
 }
 
 # Function to update progress
@@ -178,31 +218,126 @@ update_progress() {
     echo "$1" > "$PROGRESS_FILE"
 }
 
+update_selected_version() {
+    echo "$1" > "$F4_VERSION_SELECTION_FILE"
+}
 
+select_gog_or_steam_to_update_or_install () {
+    response=$(zenity --question --text="Which Version of Fallout 4 do you own?" --width="450" --ok-label="GoG" --cancel-label="Steam" --title="Fallout 4 version selection")
 
-
-    # Read last completed step
-    if [ -f "$PROGRESS_FILE" ]; then
-        response=$(zenity --question --text="Looks like the script was interrupted.\n\nDo you want to continue the process from last known step or restart again from the beginning?" --width="450" --ok-label="Restart from the beginning" --cancel-label="Continue from last known step" --title="Script interrupted")
-
-        # Check the response
-        if [ $? -eq 0 ]; then
-            echo "Restart the script from beginning"
-            rm -f "$PROGRESS_FILE"
-            LAST_STEP=0
-            ask_user_if_he_wants_to_update
-        else
-            echo "Continue from last known step."
-            LAST_STEP=$(cat "$PROGRESS_FILE")
-        fi
+    # Check the response
+    if [ $? -eq 0 ]; then
+        echo "GoG Selected"
+        update_selected_version "GOG"
     else
-        LAST_STEP=0
-        ask_user_if_he_wants_to_update
+        echo "Steam selected"
+        update_selected_version "STEAM"
+    fi
+}
+
+read_selected_version () {
+    if [ ! -f "$F4_VERSION_SELECTION_FILE" ]; then
+        echo "Fallout 4 version was not selected"
+    else
+        echo "Fallout 4 GoG version was selected."
+        F4_VERSION=$(cat "$F4_VERSION_SELECTION_FILE")
+    fi
+}
+
+
+find_f4_heroic_prefix_location () {
+        if [[ ! -f "$HEROIC_PREFIX_FILE" ]]; then
+            echo "Fallout 4 is not installed in Heroic."
+            check_if_heroic_is_installed_else_install
+            
+			response=$(zenity --question --text="Heroic Launcher will now start.\nMake sure to install Fallout 4.\n\nOnce completed close Heroic Launcher.\n\nPress 'Continue' to start the process." --width="450" --ok-label="Continue" --cancel-label="Cancel" --title="Check if updates are applied")
+            printf "\n\nHeroic Launcher will now start.\nMake sure to install Fallout 4.\n\nOnce completed close Heroic Launcher.\n\nPress 'Continue' to start the process.\n\n"
+			# Check the response
+			if [ $? -eq 0 ]; then
+			    echo "Ok pressed"
+                flatpak run com.heroicgameslauncher.hgl > /dev/null 2>&1
+			else
+			    echo "Cancel pressed"
+			    exit
+			fi
+        fi
+
+    # Extract the winePrefix using jq
+    echo "Fallout 4 recognized to be installed in Heroic Launcher." 
+    COMPAT_DATA_PATH="$(jq -r '."1998527297".winePrefix' "$HEROIC_PREFIX_FILE")"
+    WINEPREFIX="$COMPAT_DATA_PATH/pfx"
+    FALLOUT_4_STEAMUSER_DIR="$WINEPREFIX/drive_c/users/steamuser"
+}
+
+check_if_fallout_4_is_installed () {
+    check_if_sd_card_is_mounted_and_set_proton_f4_paths
+    if [ "$F4_VERSION" == "STEAM" ]; then
+        echo "F4_VERSION is STEAM"
+
+            COMPAT_DATA_PATH="$HOME/.steam/steam/steamapps/compatdata/377160"
+            WINEPREFIX="$COMPAT_DATA_PATH/pfx"
+            FALLOUT_4_STEAMUSER_DIR="$WINEPREFIX/drive_c/users/steamuser"
+
+            # Check where Steam Version of Fallout 4 is installed.
+            if [ -e "$SSD_F4_LAUNCHER_FILE" ]; then
+                echo "Fallout 4 recognized to be installed on Internal SSD"
+
+                    STEAM_APPMANIFEST_PATH="$HOME/.steam/steam/steamapps/appmanifest_377160.acf"
+                    FALLOUT_4_DIR="$HOME/.steam/steam/steamapps/common/Fallout 4"
+
+            elif [ -e "$SD_CARD_F4_LAUNCHER_FILE" ]; then
+                echo "Fallout 4 recognized to be installed on SD Card"
+
+                    STEAM_APPMANIFEST_PATH="$SD_MOUNT/steamapps/appmanifest_377160.acf"
+                    FALLOUT_4_DIR="$SD_MOUNT/steamapps/common/Fallout 4"
+            else
+                    echo "ERROR: Steam version of Fallout 4 is not installed on this device."
+                    exit
+            fi
+    elif [ "$F4_VERSION" == "GOG" ]; then
+        echo "F4_VERSION is GOG"
+        find_f4_heroic_prefix_location
+        find_fallout4_heroic_install_path
+    else
+        echo "Unknown F4_VERSION: $F4_VERSION"
+        rm -f "$PROGRESS_FILE"
+        rm -f "$F4_VERSION_SELECTION_FILE"
+        echo "Please run the script again."
+        exit
     fi
 
+}
 
+# Read last completed step
 
+if [ -f "$PROGRESS_FILE" ] && [ -f "$F4_VERSION_SELECTION_FILE" ]; then
 
+    response=$(zenity --question --text="Looks like the script was interrupted.\n\nDo you want to continue the process from last known step or restart again from the beginning?" --width="450" --ok-label="Restart from the beginning" --cancel-label="Continue from last known step" --title="Script interrupted")
+
+    # Check the response
+    if [ $? -eq 0 ]; then
+        echo "Restart the script from beginning"
+        rm -f "$PROGRESS_FILE"
+        rm -f "$F4_VERSION_SELECTION_FILE"
+        LAST_STEP=0
+        select_gog_or_steam_to_update_or_install
+        read_selected_version
+        check_if_fallout_4_is_installed
+        ask_user_if_he_wants_to_update
+    else
+        echo "Continue from last known step."
+        LAST_STEP=$(cat "$PROGRESS_FILE")
+        read_selected_version
+        check_if_fallout_4_is_installed
+    fi
+
+else
+    LAST_STEP=0
+    select_gog_or_steam_to_update_or_install
+    read_selected_version
+    check_if_fallout_4_is_installed
+    ask_user_if_he_wants_to_update
+fi
 
 # Step 1: Check if Heroic Launcher is already installed
 if [ "$LAST_STEP" -lt 1 ]; then
@@ -210,7 +345,7 @@ if [ "$LAST_STEP" -lt 1 ]; then
     update_progress 1
 fi
 
-sleep 1
+
 
 # Step 2: Setting up downgrade-list
 if [ "$LAST_STEP" -lt 2 ]; then
@@ -235,7 +370,7 @@ EOL
     update_progress 2
 fi
 
-sleep 1
+
 
 # Step 3: Setting up SteamCMD
 if [ "$LAST_STEP" -lt 3 ]; then
@@ -249,7 +384,7 @@ if [ "$LAST_STEP" -lt 3 ]; then
     update_progress 3
 fi
 
-sleep 1
+
 
 # Step 4: Prompt user for Steam login credentials
 if [ "$LAST_STEP" -lt 4 ]; then
@@ -476,9 +611,13 @@ if [ "$LAST_STEP" -lt 7 ]; then
         printf "\n\nGoG installer for Fallout London will now launch.\n\n1. Click 'Install' or 'Update' if you have both options\n2. Select Drive H:\n3. Click Install Here\n4. Close the installer after it's done to continue the setup process.\n\nMake sure to disconnect all external drives other than Internal SSD and microSD card before you proceed.\n\n"
 
         # Export the variables
-        export STEAM_COMPAT_DATA_PATH
+        export STEAM_COMPAT_DATA_PATH="$COMPAT_DATA_PATH"
         export WINEPREFIX
         export STEAM_COMPAT_CLIENT_INSTALL_PATH="/home/deck/.steam"
+
+        echo "COMPAT_DATA_PATH is $COMPAT_DATA_PATH"
+        echo "WINEPREFIX is $WINEPREFIX"
+
 
         # Create the dosdevices directory if it doesn't exist
         mkdir -p "$WINEPREFIX/dosdevices"
@@ -501,6 +640,13 @@ if [ "$LAST_STEP" -lt 7 ]; then
 	
 	    # Run the game using Proton with the specified Wine prefix and compatibility data path
         killall wineserver
+
+        echo "$PROTON_DIR/proton"
+        echo "$GAME_EXE_PATH"
+        echo "$COMPAT_DATA_PATH"
+        echo "$WINEPREFIX" 
+        echo "$STEAM_COMPAT_CLIENT_INSTALL_PATH" 
+
         "$PROTON_DIR/proton" run "$GAME_EXE_PATH"
 
         update_progress 7
@@ -909,6 +1055,11 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
+if [ "$F4_VERSION" = "STEAM" ]; then
+    # Your commands go here
+    echo "F4_VERSION is STEAM, executing command..."
+    # Example command
+
 FILE="$STEAM_APPMANIFEST_PATH"
 
 disable_steam_updates_escape_message() {
@@ -983,16 +1134,90 @@ else
 	echo "file $file does not exist."
 fi
 
-
+fi
     update_progress 18
+fi
+
+
+if [ "$LAST_STEP" -lt 19 ]; then
+        read_selected_version
+        check_if_fallout_4_is_installed
+
+        FAUDIO_DIR="$HOME/Downloads/faudio"
+        FAudio_Target="$WINEPREFIX/drive_c/windows/system32"
+        # Step 1: Check if the F4_VERSION variable is set to "GOG"
+        if [ "$F4_VERSION" = "GOG" ]; then
+            # Define the path to the Proton prefix
+
+            # Define the path to the FAudio.dll file
+            FAudio_FILE="$FAudio_Target/FAudio.dll"
+
+            # Check if the FAudio.dll file exists
+            if [ -f "$FAudio_FILE" ]; then
+                printf "FAudio.dll is installed.\n"
+                echo "$FAudio_Target" 
+            else
+                echo "FAudio.dll is not installed. Proceeding with installation."
+
+                # Add local bin directory to PATH
+                export WINEPREFIX
+                echo "$WINEPREFIX"
+                # Step 3: Install FAudio using winetricks
+                echo "Installing FAudio"
+
+#!/bin/bash# Variables
+# WINEPREFIX_PATH="$WINEPREFIX"
+# Ensure the Wine prefix path is provided
+
+#sorta working
+                mkdir -p $FAUDIO_DIR
+                wget -P "$FAUDIO_DIR" -O "$FAUDIO_DIR/faudio-20.07.tar.xz" https://github.com/Kron4ek/FAudio-Builds/releases/download/20.07/faudio-20.07.tar.xz
+                tar xvf "$FAUDIO_DIR/faudio-20.07.tar.xz" -C "$HOME/Downloads/faudio"
+
+                for dll in "$FAUDIO_DIR/faudio-20.07/x64/"*.dll; do
+                cp -f "$dll" "$FAudio_Target/"
+                echo "$dll copied correctly"
+                done
+
+                # chmod +x "$HOME/Downloads/faudio/faudio-20.07"
+                # cd "$HOME/Downloads/faudio/faudio-20.07"
+                # WINE="$HOME/.local/share/flatpak/app/org.winehq.Wine/current/active/export/bin/org.winehq.Wine" WINEPREFIX="$WINEPREFIX" ./wine_setup_faudio.sh
+                # cd ..
+                # cd ..
+                # cd ..
+                # Verify if FAudio.dll was installed
+                if [ -f "$FAudio_FILE" ]; then
+                    echo "FAudio.dll installed successfully."
+                else
+                    echo "Failed to install FAudio.dll. Please refer to step 11 of the instructions on https://www.reddit.com/r/fallout4london/comments/1ebrc74/steam_deck_instructions/ for GoG Fallout London installation."
+                    exit 1
+                fi
+            fi
+        fi
+
+
+
+    update_progress 19
 fi
 
 # Cleanup progress file
 rm -f "$PROGRESS_FILE"
+rm -f "$F4_VERSION_SELECTION_FILE"
+rm -rf "$FAUDIO_DIR"
 
-text="<b>All steps completed successfully!</b>\n\nYou can now close the terminal / Konsole.\nFallout London can be launched from Fallout 4 Steam page."
-zenity --info \
-       --title="Overkill" \
-       --width="450" \
-       --text="$text" 2>/dev/null
+
+    if [ "$F4_VERSION" == "STEAM" ]; then
+        text="<b>All steps completed successfully!</b>\n\nYou can now close the terminal / Konsole.\nFallout London can be launched from Fallout 4 Steam page."
+        zenity --info \
+            --title="Overkill" \
+            --width="450" \
+            --text="$text" 2>/dev/null
+    elif [ "$F4_VERSION" == "GOG" ]; then
+        text="<b>All steps completed successfully!</b>\n\nYou can now close the terminal / Konsole.\nFallout London can be launched from Fallout 4 Heroic Launcher page."
+        zenity --info \
+            --title="Overkill" \
+            --width="450" \
+            --text="$text" 2>/dev/null
+    fi
+
 exit
