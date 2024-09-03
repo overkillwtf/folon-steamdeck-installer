@@ -199,7 +199,7 @@ check_if_heroic_is_installed_else_install () {
         echo "Heroic Launcher is installed."
     else
         echo "Setting up Heroic Launcher."
-        flatpak install flathub com.heroicgameslauncher.hgl
+        flatpak -y install flathub com.heroicgameslauncher.hgl
     fi
 }
 
