@@ -239,7 +239,7 @@ read_selected_version () {
     if [ ! -f "$F4_VERSION_SELECTION_FILE" ]; then
         echo "Fallout 4 version was not selected"
     else
-        echo "Fallout 4 GoG version was selected."
+        echo "Reading selected version from file."
         F4_VERSION=$(cat "$F4_VERSION_SELECTION_FILE")
     fi
 }
