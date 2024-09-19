@@ -34,7 +34,7 @@ chmod +x fallout.sh && \
 ./fallout.sh
 ```
 
-You can find the full written guide on overkill.wtf.
+You can find the full written guide on [overkill.wtf](https://overkill.wtf/fallout-london-steam-deck-1-click-installer/).
 
 ## Password Disclaimer:
 
