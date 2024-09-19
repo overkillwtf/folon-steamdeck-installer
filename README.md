@@ -23,6 +23,12 @@ Note: Right now, this script applies [the optimized .ini](https://github.com/kru
 To run the script, run the command below.
 
 ```
+bash <(curl -s https://raw.githubusercontent.com/overkillwtf/folon-steamdeck-installer/main/fallout.sh)
+```
+
+or
+
+```
 curl -O https://raw.githubusercontent.com/overkillwtf/folon-steamdeck-installer/main/fallout.sh && \
 chmod +x fallout.sh && \
 ./fallout.sh
