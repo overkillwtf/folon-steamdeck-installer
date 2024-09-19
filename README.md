@@ -1,6 +1,9 @@
 # Fallout London Steam Deck Installer
 
-![](https://github.com/overkillwtf/folon-steamdeck-installer/blob/main/folondeck.gif)
+<p align="center">
+  <img src="https://github.com/overkillwtf/folon-steamdeck-installer/blob/main/folondeck.gif" alt="Folondeck" />
+</p>
+
 
 ## About the Script
 
