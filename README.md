@@ -14,7 +14,7 @@ This script performs the following actions:
 - Installs GOG through Heroic Launcher.
 - Automatically moves the necessary files to the correct paths.
 
-Note: Right now, this script applies [the optimized .ini](https://github.com/krupar101/f4london_steam_deck_ini) by @krupar101.
+Note: Right now, this script applies [the optimized .ini]([https://github.com/krupar101/f4london_steam_deck_ini](https://github.com/krupar101/f4london_steam_deck_ini/blob/main/Fallout4.INI)) by @krupar101.
 
 ---
 
