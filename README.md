@@ -1,10 +1,8 @@
 # Fallout London Steam Deck Installer
 
 <p align="center">
-  <img src="https://github.com/overkillwtf/folon-steamdeck-installer/blob/main/folondeck.gif" alt="Folondeck" width="100%" />
+  <img src="https://github.com/overkillwtf/folon-steamdeck-installer/blob/main/folondeck.gif" alt="Folondeck" />
 </p>
-
-
 
 ## About the Script
 
