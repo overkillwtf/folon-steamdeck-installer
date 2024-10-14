@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 echo "---------------------"
 echo ""
 echo "Fallout London installation script for Steam Deck by krupar"
