@@ -2,6 +2,7 @@
 echo "---------------------"
 echo ""
 echo "Fallout London installation script for Steam Deck by krupar"
+echo "Buy me a coffee @ https://ko-fi.com/krupar"
 echo ""
 echo "---------------------"
 sleep 1
