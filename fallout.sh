@@ -762,7 +762,7 @@ fi
 # Step 11: Ensure that the proper Fallout4.INI is placed correctly.
 if [ "$LAST_STEP" -lt 11 ]; then
 
-	ini_file_desired_checksum="82cfb36d003551ee5db7fb3321e830e1bceed53aa74aa30bb49bf0278612a9d7"
+	ini_file_desired_checksum="69105790e841af66b082bfb2ec2430e26fce3c279f81cbe0312bbedd1705b6a9"
 	fallout4_mygames_dir="$FALLOUT_4_STEAMUSER_DIR/Documents/My Games/Fallout4"
 	file_path="$fallout4_mygames_dir/Fallout4.INI"
 	computed_checksum=$(sha256sum "$file_path" | awk '{ print $1 }')
