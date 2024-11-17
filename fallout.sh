@@ -29,7 +29,7 @@ SSD_F4_LAUNCHER_FILE="$HOME/.steam/steam/steamapps/common/Fallout 4/$F4_LAUNCHER
 
 check_if_sd_card_is_mounted_and_set_proton_f4_paths() {
 	#Function to automatically detect the SD card mount location and set Proton Directory and Fallout 4 launcher Directory for installation detection
-	SD_MOUNT=$(findmnt -rn -o TARGET | grep '/run/media')
+	SD_MOUNT=$(findmnt -rn -o TARGET | grep '/run/media' | sed 's/\x20/ /g')
 
 	if [ -n "$SD_MOUNT" ]; then
 		echo "SD Card is mounted at: $SD_MOUNT"
