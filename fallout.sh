@@ -75,7 +75,7 @@ find_fallout4_heroic_install_path() {
 	# Check if the install_path was found
 	if [[ -n "$install_path" ]]; then
 		echo "Fallout 4 installation path found."
-		FALLOUT_4_DIR="$install_path"
+		export FALLOUT_4_DIR="$install_path"
 	else
 		echo "Fallout 4 not recognized to be installed in Heroic Launcher. Install it and try again."
 		exit
@@ -682,7 +682,8 @@ if [ "$LAST_STEP" -lt 7 ]; then
   		FALLOUT_LONDON_DIR="$WINEPREFIX/dosdevices/i:"
     		export FALLOUT_4_DIR
       		export FALLOUT_LONDON_DIR
-      		echo "FALLOUT_LONDON_DIR=$FALLOUT_LONDON_DIR"
+      		echo "FALLOUT_4_DIR=$FALLOUT_4_DIR"
+		echo "FALLOUT_LONDON_DIR=$FALLOUT_LONDON_DIR"
 
 		# Run the game using Proton with the specified Wine prefix and compatibility data path
 		killall wineserver
