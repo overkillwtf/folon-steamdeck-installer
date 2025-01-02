@@ -1094,38 +1094,46 @@ if [ "$LAST_STEP" -lt 18 ]; then
 				if [ $? -eq 0 ]; then
 
 					response=$(zenity --question --width="450" --text="If you don't know what you're doing it's recommended not to perform this action. \n\nAre you sure you want to continue?" --ok-label="Yes" --cancel-label="No" --title="Disable Steam Updates")
-
+     
 					# Evaluate the response
 					if [ $? -eq 0 ]; then
-
-						# Get the password status for the current user
-						PASS_STATUS=$(passwd -S $USER 2>/dev/null)
-
-						# Extract the status field from the output
-						STATUS=${PASS_STATUS:${#USER}+1:2}
-
-						password_set="N"
-
-						if [ "$STATUS" = "NP" ]; then
-							echo ""
-							echo "SUDO PASSWORD NOT SET"
-							echo ""
-
-							response=$(zenity --question --width="450" --text="It looks like you don't have a SUDO password set for $USER user. Do you want to set it right now?\n\n<b>You will need to type it into the Konsole window</b>" --ok-label="Yes" --cancel-label="No" --title="Disable Steam Updates")
-
-							# Evaluate the response
-							if [ $? -eq 0 ]; then
-								passwd
-								password_set="Y"
-								echo "SUDO Password is set for the user $USER"
-							else
-								disable_steam_updates_escape_message
-							fi
-
+						# Run chattr and check if it was successful
+						chattr +i "$FILE"
+						if [ $? -eq 0 ]; then
+  							echo "The file '$FILE' was successfully made immutable."
 						else
-							echo "SUDO Password is set for the user $USER."
-							password_set="Y"
-						fi
+  							echo "Failed to make the file '$FILE' immutable."
+	 						echo "Now tryng with sudo."
+	 						
+							# Get the password status for the current user
+							PASS_STATUS=$(passwd -S $USER 2>/dev/null)
+	
+							# Extract the status field from the output
+							STATUS=${PASS_STATUS:${#USER}+1:2}
+	
+							password_set="N"
+	
+							if [ "$STATUS" = "NP" ]; then
+								echo ""
+								echo "SUDO PASSWORD NOT SET"
+								echo ""
+	
+								response=$(zenity --question --width="450" --text="It looks like you don't have a SUDO password set for $USER user. Do you want to set it right now?\n\n<b>You will need to type it into the Konsole window</b>" --ok-label="Yes" --cancel-label="No" --title="Disable Steam Updates")
+	
+								# Evaluate the response
+								if [ $? -eq 0 ]; then
+									passwd
+									password_set="Y"
+									echo "SUDO Password is set for the user $USER"
+								else
+									disable_steam_updates_escape_message
+								fi
+	
+							else
+								echo "SUDO Password is set for the user $USER."
+								password_set="Y"
+							fi
+       						fi
 					else
 						disable_steam_updates_escape_message
 					fi
