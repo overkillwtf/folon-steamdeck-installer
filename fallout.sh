@@ -668,7 +668,7 @@ if [ "$LAST_STEP" -lt 7 ]; then
 		fi
 
   		# Create the new symlink
-		ln -s "$FALLOUT_4_DIR" "$WINEPREFIX/dosdevices/i:"
+		ln -s "$FALLOUT_LONDON_DIR" "$WINEPREFIX/dosdevices/i:"
 
 		# Verify the symlink
 		if [ -L "$WINEPREFIX/dosdevices/i:" ]; then
@@ -680,7 +680,8 @@ if [ "$LAST_STEP" -lt 7 ]; then
 
 		echo "replace FALLOUT_LONDON_DIR=$FALLOUT_LONDON_DIR by:"
   		FALLOUT_LONDON_DIR="$WINEPREFIX/dosdevices/i:"
-    		export FALLOUT_LONDON_DIR
+    		export FALLOUT_4_DIR
+      		export FALLOUT_LONDON_DIR
       		echo "FALLOUT_LONDON_DIR=$FALLOUT_LONDON_DIR"
 
 		# Run the game using Proton with the specified Wine prefix and compatibility data path
