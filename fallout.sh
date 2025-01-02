@@ -13,6 +13,7 @@ echo ""
 echo "---------------------"
 sleep 1
 
+
 # Global Paths
 DOWNGRADE_LIST_PATH="$HOME/Downloads/folon_downgrade.txt"
 F4LONDON_INI_URL="https://raw.githubusercontent.com/krupar101/f4london_steam_deck_ini/main/Fallout4.INI"
