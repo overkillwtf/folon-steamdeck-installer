@@ -56,6 +56,7 @@ find_f4london_install_path() {
 		echo "Fallout London installation path found."
 		export FALLOUT_LONDON_DIR="$install_path"
 		echo "$FALLOUT_LONDON_DIR"
+  		export FALLOUT_LONDON_DIR="$HOME/Games/Heroic/Fallout London"
 	else
 		echo "Fallout London not recognized to be installed in Heroic Launcher."
 		export FALLOUT_LONDON_DIR="$HOME/Games/Heroic/Fallout London"
@@ -668,6 +669,7 @@ if [ "$LAST_STEP" -lt 7 ]; then
 		fi
 
   		# Create the new symlink
+    		echo "FALLOUT_LONDON_DIR=$FALLOUT_LONDON_DIR"
 		ln -sf "$FALLOUT_LONDON_DIR" "$WINEPREFIX/dosdevices/i:"
 
 		# Verify the symlink
