@@ -683,8 +683,9 @@ if [ "$LAST_STEP" -lt 7 ]; then
 
 		echo "replace FALLOUT_LONDON_DIR=$FALLOUT_LONDON_DIR by:"
   		FALLOUT_LONDON_DIR="$WINEPREFIX/dosdevices/i:"
-    		
+    		FALLOUT_LONDON_DIR="$WINEPREFIX/dosdevices/i:/home/user/Games/Heroic/Fallout London"
 		export FALLOUT_LONDON_DIR
+  
       		echo "FALLOUT_4_DIR=$FALLOUT_4_DIR"
 		echo "FALLOUT_LONDON_DIR=$FALLOUT_LONDON_DIR"
 
