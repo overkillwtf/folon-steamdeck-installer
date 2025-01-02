@@ -54,6 +54,7 @@ find_f4london_install_path() {
 	if [[ -n "$install_path" ]]; then
 		echo "Fallout London installation path found."
 		FALLOUT_LONDON_DIR="$install_path"
+  		FALLOUT_LONDON_DIR="$HOME/Games/Heroic/Fallout London"
 		echo "$FALLOUT_LONDON_DIR"
 	else
 		echo "Fallout London not recognized to be installed in Heroic Launcher."
