@@ -13,7 +13,6 @@ echo ""
 echo "---------------------"
 sleep 1
 
-
 # Global Paths
 DOWNGRADE_LIST_PATH="$HOME/Downloads/folon_downgrade.txt"
 F4LONDON_INI_URL="https://raw.githubusercontent.com/krupar101/f4london_steam_deck_ini/main/Fallout4.INI"
@@ -54,12 +53,11 @@ find_f4london_install_path() {
 	# Check if the install_path was found
 	if [[ -n "$install_path" ]]; then
 		echo "Fallout London installation path found."
-		export FALLOUT_LONDON_DIR="$install_path"
+		FALLOUT_LONDON_DIR="$install_path"
 		echo "$FALLOUT_LONDON_DIR"
-  		export FALLOUT_LONDON_DIR="$HOME/Games/Heroic/Fallout London"
 	else
 		echo "Fallout London not recognized to be installed in Heroic Launcher."
-		export FALLOUT_LONDON_DIR="$HOME/Games/Heroic/Fallout London"
+		FALLOUT_LONDON_DIR="$HOME/Games/Heroic/Fallout London"
 	fi
 	GAME_EXE_PATH="$FALLOUT_LONDON_DIR/installer.exe"
 }
@@ -76,7 +74,7 @@ find_fallout4_heroic_install_path() {
 	# Check if the install_path was found
 	if [[ -n "$install_path" ]]; then
 		echo "Fallout 4 installation path found."
-		export FALLOUT_4_DIR="$install_path"
+		FALLOUT_4_DIR="$install_path"
 	else
 		echo "Fallout 4 not recognized to be installed in Heroic Launcher. Install it and try again."
 		exit
@@ -644,7 +642,6 @@ if [ "$LAST_STEP" -lt 7 ]; then
 		export STEAM_COMPAT_DATA_PATH="$COMPAT_DATA_PATH"
 		export WINEPREFIX
 		export STEAM_COMPAT_CLIENT_INSTALL_PATH="/home/deck/.steam"
-  		export STEAM_COMPAT_MOUNTS="/"
 
 		echo "COMPAT_DATA_PATH is $COMPAT_DATA_PATH"
 		echo "WINEPREFIX is $WINEPREFIX"
@@ -667,29 +664,6 @@ if [ "$LAST_STEP" -lt 7 ]; then
 			echo "Failed to create Drive H:"
 			exit
 		fi
-
-  		# Create the new symlink
-    		echo "FALLOUT_LONDON_DIR=$FALLOUT_LONDON_DIR"
-		ln -sf "$FALLOUT_LONDON_DIR" "$WINEPREFIX/dosdevices/i:"
-
-		# Verify the symlink
-		if [ -L "$WINEPREFIX/dosdevices/i:" ]; then
-			echo "Drive I: successfully created pointing to $FALLOUT_LONDON_DIR"
-		else
-			echo "Failed to create Drive I:"
-			exit
-		fi
-
-		FALLOUT_4_DIR="$WINEPREFIX/dosdevices/h:"
-		export FALLOUT_4_DIR
-
-		echo "replace FALLOUT_LONDON_DIR=$FALLOUT_LONDON_DIR by:"
-  		FALLOUT_LONDON_DIR="$WINEPREFIX/dosdevices/i:"
-    		#FALLOUT_LONDON_DIR="/home/user/Games/Heroic/Fallout London"
-		export FALLOUT_LONDON_DIR
-  
-      		echo "FALLOUT_4_DIR=$FALLOUT_4_DIR"
-		echo "FALLOUT_LONDON_DIR=$FALLOUT_LONDON_DIR"
 
 		# Run the game using Proton with the specified Wine prefix and compatibility data path
 		killall wineserver
