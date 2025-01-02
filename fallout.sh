@@ -643,6 +643,7 @@ if [ "$LAST_STEP" -lt 7 ]; then
 		export STEAM_COMPAT_DATA_PATH="$COMPAT_DATA_PATH"
 		export WINEPREFIX
 		export STEAM_COMPAT_CLIENT_INSTALL_PATH="/home/deck/.steam"
+  		export STEAM_COMPAT_MOUNTS="/"
 
 		echo "COMPAT_DATA_PATH is $COMPAT_DATA_PATH"
 		echo "WINEPREFIX is $WINEPREFIX"
