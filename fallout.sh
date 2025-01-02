@@ -678,10 +678,13 @@ if [ "$LAST_STEP" -lt 7 ]; then
 			exit
 		fi
 
+		FALLOUT_4_DIR="$WINEPREFIX/dosdevices/h:"
+		export FALLOUT_4_DIR
+
 		echo "replace FALLOUT_LONDON_DIR=$FALLOUT_LONDON_DIR by:"
   		FALLOUT_LONDON_DIR="$WINEPREFIX/dosdevices/i:"
-    		export FALLOUT_4_DIR
-      		export FALLOUT_LONDON_DIR
+    		
+		export FALLOUT_LONDON_DIR
       		echo "FALLOUT_4_DIR=$FALLOUT_4_DIR"
 		echo "FALLOUT_LONDON_DIR=$FALLOUT_LONDON_DIR"
 
