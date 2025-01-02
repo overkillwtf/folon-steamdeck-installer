@@ -679,7 +679,7 @@ if [ "$LAST_STEP" -lt 7 ]; then
 
 		echo "replace FALLOUT_LONDON_DIR=$FALLOUT_LONDON_DIR by:"
   		export FALLOUT_LONDON_DIR="$WINEPREFIX/dosdevices/i:"
-    	echo "FALLOUT_LONDON_DIR=$FALLOUT_LONDON_DIR"
+    		echo "FALLOUT_LONDON_DIR=$FALLOUT_LONDON_DIR"
 
 		# Run the game using Proton with the specified Wine prefix and compatibility data path
 		killall wineserver
