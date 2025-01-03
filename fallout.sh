@@ -704,9 +704,9 @@ if [ "$LAST_STEP" -lt 7 ]; then
     		echo "FALLOUT_LONDON_DIR is $FALLOUT_LONDON_DIR"
 
 		FALLOUT_4_DIR="$WINEPREFIX/dosdevices/h:"
-		export $FALLOUT_4_DIR
+		export FALLOUT_4_DIR="FALLOUT_4_DIR"
  		FALLOUT_LONDON_DIR="$WINEPREFIX/dosdevices/h:/FalloutLondon"
-		export $FALLOUT_LONDON_DIR
+		export FALLOUT_4_DIR="$FALLOUT_LONDON_DIR"
 
 		"$PROTON_DIR/proton" run "$GAME_EXE_PATH"
 
