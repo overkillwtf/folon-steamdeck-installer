@@ -685,8 +685,13 @@ if [ "$LAST_STEP" -lt 7 ]; then
 		FALLOUT_4_DIR="$WINEPREFIX/dosdevices/h:"
   		FALLOUT_LONDON_DIR="$WINEPREFIX/dosdevices/h:/Fallout London"
 
-		ls -al $FALLOUT_4_DIR
-  		ls -al $FALLOUT_LONDON_DIR
+  		if [ -d "$FALLOUT_4_DIR" ]; then
+		    ls -al "$FALLOUT_4_DIR"
+		fi
+
+  		if [ -d "$FALLOUT_LONDON_DIR" ]; then
+		    ls -al "$FALLOUT_LONDON_DIR"
+		fi
 
 		# Run the game using Proton with the specified Wine prefix and compatibility data path
 		killall wineserver
