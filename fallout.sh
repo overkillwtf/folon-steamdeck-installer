@@ -643,7 +643,7 @@ if [ "$LAST_STEP" -lt 7 ]; then
 		export STEAM_COMPAT_DATA_PATH="$COMPAT_DATA_PATH"
 		export WINEPREFIX
 		export STEAM_COMPAT_CLIENT_INSTALL_PATH="/home/deck/.steam"
-  		export STEAM_COMPAT_MOUNTS="/home/user"
+  		export STEAM_COMPAT_MOUNTS="/home/user,/"
 
 		echo "COMPAT_DATA_PATH is $COMPAT_DATA_PATH"
 		echo "WINEPREFIX is $WINEPREFIX"
@@ -683,9 +683,11 @@ if [ "$LAST_STEP" -lt 7 ]; then
 #			exit
 #		fi
 #
-#		FALLOUT_4_DIR="$WINEPREFIX/dosdevices/h:"
-# 		#FALLOUT_LONDON_DIR="$WINEPREFIX/dosdevices/h:/Fallout London"
-
+		FALLOUT_4_DIR="$WINEPREFIX/dosdevices/h:"
+		export $FALLOUT_4_DIR
+ 		FALLOUT_LONDON_DIR="$WINEPREFIX/dosdevices/h:/Fallout London"
+		export $FALLOUT_LONDON_DIR
+  
   		if [ -d "$FALLOUT_4_DIR" ]; then
 		    ls -al "$FALLOUT_4_DIR"
 		fi
