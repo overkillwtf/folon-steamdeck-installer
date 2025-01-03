@@ -667,26 +667,21 @@ if [ "$LAST_STEP" -lt 7 ]; then
 			exit
 		fi
 
-#  		# Create the new symlink
-#		# Remove existing symlink if it exists
-#		if [ -L "$WINEPREFIX/dosdevices/h:" ]; then
-#			rm -f "$WINEPREFIX/dosdevices/h:/Fallout London"
-#		fi
-#   
-#		ln -sf "$FALLOUT_LONDON_DIR" "$WINEPREFIX/dosdevices/h:/Fallout London"
-#
-#		# Verify the symlink
-#		if [ -L "$WINEPREFIX/dosdevices/h:/Fallout London" ]; then
-#			echo ""H:/Fallout London" link successfully created pointing to $FALLOUT_LONDON_DIR"
-#		else
-#			echo "Failed to create in $FALLOUT_LONDON_DIR link to "H:/Fallout London""
-#			exit
-#		fi
-#
-		FALLOUT_4_DIR="$WINEPREFIX/dosdevices/h:"
-		export $FALLOUT_4_DIR
- 		FALLOUT_LONDON_DIR="$WINEPREFIX/dosdevices/h:/Fallout London"
-		export $FALLOUT_LONDON_DIR
+  		# Create the new symlink
+		# Remove existing symlink if it exists
+		if [ -L "$WINEPREFIX/dosdevices/h:/FalloutLondon" ]; then
+			rm -f "$WINEPREFIX/dosdevices/h:/FalloutLondon"
+		fi
+   
+		ln -sf "$FALLOUT_LONDON_DIR" "$WINEPREFIX/dosdevices/h:/FalloutLondon"
+
+		# Verify the symlink
+		if [ -L "$WINEPREFIX/dosdevices/h:/Fallout London" ]; then
+			echo ""H:/Fallout London" link successfully created pointing to $FALLOUT_LONDON_DIR"
+		else
+			echo "Failed to create in $FALLOUT_LONDON_DIR link to "H:/Fallout London""
+			exit
+		fi
   
   		if [ -d "$FALLOUT_4_DIR" ]; then
 		    ls -al "$FALLOUT_4_DIR"
@@ -707,6 +702,11 @@ if [ "$LAST_STEP" -lt 7 ]; then
 
   		echo "FALLOUT_4_DIR is $FALLOUT_4_DIR"
     		echo "FALLOUT_LONDON_DIR is $FALLOUT_LONDON_DIR"
+
+		FALLOUT_4_DIR="$WINEPREFIX/dosdevices/h:"
+		export $FALLOUT_4_DIR
+ 		FALLOUT_LONDON_DIR="$WINEPREFIX/dosdevices/h:/FalloutLondon"
+		export $FALLOUT_LONDON_DIR
 
 		"$PROTON_DIR/proton" run "$GAME_EXE_PATH"
 
