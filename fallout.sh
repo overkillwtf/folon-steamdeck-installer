@@ -682,8 +682,8 @@ if [ "$LAST_STEP" -lt 7 ]; then
 			exit
 		fi
 
-		export FALLOUT_4_DIR = $"$WINEPREFIX/dosdevices/h:"
-  		export FALLOUT_LONDON_DIR = $"$WINEPREFIX/dosdevices/h:/Fallout London"
+		export FALLOUT_4_DIR="$WINEPREFIX/dosdevices/h:"
+  		export FALLOUT_LONDON_DIR="$WINEPREFIX/dosdevices/h:/Fallout London"
 
 		# Run the game using Proton with the specified Wine prefix and compatibility data path
 		killall wineserver
