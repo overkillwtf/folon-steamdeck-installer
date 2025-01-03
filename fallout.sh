@@ -643,6 +643,7 @@ if [ "$LAST_STEP" -lt 7 ]; then
 		export STEAM_COMPAT_DATA_PATH="$COMPAT_DATA_PATH"
 		export WINEPREFIX
 		export STEAM_COMPAT_CLIENT_INSTALL_PATH="/home/deck/.steam"
+  		export STEAM_COMPAT_MOUNTS="/hoem/user"
 
 		echo "COMPAT_DATA_PATH is $COMPAT_DATA_PATH"
 		echo "WINEPREFIX is $WINEPREFIX"
@@ -666,24 +667,24 @@ if [ "$LAST_STEP" -lt 7 ]; then
 			exit
 		fi
 
-  		# Create the new symlink
-		# Remove existing symlink if it exists
-		if [ -L "$WINEPREFIX/dosdevices/h:" ]; then
-			rm -f "$WINEPREFIX/dosdevices/h:/Fallout London"
-		fi
-    
-		ln -sf "$FALLOUT_LONDON_DIR" "$WINEPREFIX/dosdevices/h:/Fallout London"
-
-		# Verify the symlink
-		if [ -L "$WINEPREFIX/dosdevices/h:/Fallout London" ]; then
-			echo ""H:/Fallout London" link successfully created pointing to $FALLOUT_LONDON_DIR"
-		else
-			echo "Failed to create in $FALLOUT_LONDON_DIR link to "H:/Fallout London""
-			exit
-		fi
-
-		FALLOUT_4_DIR="$WINEPREFIX/dosdevices/h:"
-  		FALLOUT_LONDON_DIR="$WINEPREFIX/dosdevices/h:/Fallout London"
+#  		# Create the new symlink
+#		# Remove existing symlink if it exists
+#		if [ -L "$WINEPREFIX/dosdevices/h:" ]; then
+#			rm -f "$WINEPREFIX/dosdevices/h:/Fallout London"
+#		fi
+#   
+#		ln -sf "$FALLOUT_LONDON_DIR" "$WINEPREFIX/dosdevices/h:/Fallout London"
+#
+#		# Verify the symlink
+#		if [ -L "$WINEPREFIX/dosdevices/h:/Fallout London" ]; then
+#			echo ""H:/Fallout London" link successfully created pointing to $FALLOUT_LONDON_DIR"
+#		else
+#			echo "Failed to create in $FALLOUT_LONDON_DIR link to "H:/Fallout London""
+#			exit
+#		fi
+#
+#		FALLOUT_4_DIR="$WINEPREFIX/dosdevices/h:"
+# 		FALLOUT_LONDON_DIR="$WINEPREFIX/dosdevices/h:/Fallout London"
 
   		if [ -d "$FALLOUT_4_DIR" ]; then
 		    ls -al "$FALLOUT_4_DIR"
