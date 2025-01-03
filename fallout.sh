@@ -656,7 +656,7 @@ if [ "$LAST_STEP" -lt 7 ]; then
 		fi
 
 		# Create the new symlink
-		ln -s "$FALLOUT_4_DIR" "$WINEPREFIX/dosdevices/h:"
+		ln -sf "$FALLOUT_4_DIR" "$WINEPREFIX/dosdevices/h:"
 
 		# Verify the symlink
 		if [ -L "$WINEPREFIX/dosdevices/h:" ]; then
@@ -672,7 +672,7 @@ if [ "$LAST_STEP" -lt 7 ]; then
 			rm -f "$WINEPREFIX/dosdevices/h:/Fallout London"
 		fi
     
-		ln -s "$FALLOUT_LONDON_DIR" "$WINEPREFIX/dosdevices/h:/Fallout London"
+		ln -sf "$FALLOUT_LONDON_DIR" "$WINEPREFIX/dosdevices/h:/Fallout London"
 
 		# Verify the symlink
 		if [ -L "$WINEPREFIX/dosdevices/h:/Fallout London" ]; then
@@ -682,8 +682,8 @@ if [ "$LAST_STEP" -lt 7 ]; then
 			exit
 		fi
 
-		export FALLOUT_4_DIR="$WINEPREFIX/dosdevices/h:"
-  		export FALLOUT_LONDON_DIR="$WINEPREFIX/dosdevices/h:/Fallout London"
+		FALLOUT_4_DIR="$WINEPREFIX/dosdevices/h:"
+  		FALLOUT_LONDON_DIR="$WINEPREFIX/dosdevices/h:/Fallout London"
 
 		# Run the game using Proton with the specified Wine prefix and compatibility data path
 		killall wineserver
@@ -693,6 +693,9 @@ if [ "$LAST_STEP" -lt 7 ]; then
 		echo "$COMPAT_DATA_PATH"
 		echo "$WINEPREFIX"
 		echo "$STEAM_COMPAT_CLIENT_INSTALL_PATH"
+
+  		echo "FALLOUT_4_DIR is $FALLOUT_4_DIR"
+    		echo "FALLOUT_LONDON_DIR is $FALLOUT_LONDON_DIR"
 
 		"$PROTON_DIR/proton" run "$GAME_EXE_PATH"
 
