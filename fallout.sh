@@ -665,6 +665,22 @@ if [ "$LAST_STEP" -lt 7 ]; then
 			exit
 		fi
 
+  		# Remove existing symlink if it exists
+		if [ -L "$WINEPREFIX/dosdevices/i:" ]; then
+			rm "$WINEPREFIX/dosdevices/i:"
+		fi
+  
+   		# Create the new symlink
+  		ln -s "$FALLOUT_LONDON_DIR" "$WINEPREFIX/dosdevices/i:"
+
+		# Verify the symlink
+		if [ -L "$WINEPREFIX/dosdevices/i:" ]; then
+			echo "Drive I: successfully created pointing to $FALLOUT_LONDON_DIR"
+		else
+			echo "Failed to create Drive I:"
+			exit
+		fi
+
 		# Run the game using Proton with the specified Wine prefix and compatibility data path
 		killall wineserver
 
