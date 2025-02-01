@@ -21,6 +21,7 @@ Note: Right now, this script applies [the optimized .ini](https://github.com/kru
 ---
 
 ## Installation
+First, close Steam by clicking on its icon in the taskbar, and click `Exit Steam`.
 
 To run the script, run the command below.
 
