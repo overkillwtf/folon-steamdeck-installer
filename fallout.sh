@@ -598,14 +598,14 @@ if [ "$LAST_STEP" -lt 5 ]; then
 	find "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/" -type d -empty -delete
 
 	# Check if there are any files left in the subfolders
-	if find "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/" -type f | read; then
-		echo "Error: One or more files need to be moved manually."
-		echo "File(s) still present:"
-		find "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/" -type f
-		zenity --info --title="Manual Intervention Required" --width="450" --text="Some files could not be moved. Please move the remaining files manually from '$STEAMCMD_DIR/linux32/steamapps/content/app_377160/' to '$FALLOUT_4_DIR'. However, do not move folders starting with 'depot_'. Move their content. Normally it should only be one file, called Fallout4 - Meshes.ba2 that has to go into /Data/.\n\nClick OK when you have finished moving the files to continue." 2>/dev/null
+		if find "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/" -mindepth 1 -type d | read; then
+	    echo "Error: One or more files need to be moved manually."
+	    echo "File(s) still present:"
+	    find "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/" -type f
+	    zenity --info --title="Manual Intervention Required" --width="450" --text="Some files could not be moved. Please move the remaining files manually from '$STEAMCMD_DIR/linux32/steamapps/content/app_377160/' to '$FALLOUT_4_DIR'. However, do not move folders starting with 'depot_'. Move their content. Normally it should only be one file, called Fallout4 - Meshes.ba2 that has to go into /Data/.\n\nClick OK when you have finished moving the files to continue." 2>/dev/null
 	else
-		rm -rf "$STEAMCMD_DIR"
-		rm "$DOWNGRADE_LIST_PATH"
+	    rm -rf "$STEAMCMD_DIR"
+	    rm "$DOWNGRADE_LIST_PATH"
 	fi
 	update_progress 5
 fi
