@@ -598,7 +598,7 @@ if [ "$LAST_STEP" -lt 5 ]; then
 	find "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/" -type d -empty -delete
 
 	# Check if there are any files left in the subfolders
-		if find "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/" -mindepth 1 -type d | read; then
+	if find "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/" -mindepth 1 -type d | read; then
 	    echo "Error: One or more files need to be moved manually."
 	    echo "File(s) still present:"
 	    find "$STEAMCMD_DIR/linux32/steamapps/content/app_377160/" -type f
