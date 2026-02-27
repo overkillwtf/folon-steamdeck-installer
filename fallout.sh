@@ -1026,32 +1026,42 @@ if [ "$LAST_STEP" -lt 16 ]; then
 	update_progress 16
 fi
 
-# Step 17: Disable MemoryManager in 'Buffout 4'. Fallout London has it's own memory manager and the two sometimes cause conflicts and crash the game.
+# Step 17: Disable MemoryManager and InputSwitch in 'Buffout 4'.
 if [ "$LAST_STEP" -lt 17 ]; then
 
-	# Path to the config file
 	config_file="$FALLOUT_4_DIR/Data/F4SE/Plugins/Buffout4/config.toml"
 
-	# Check if the config file exists
 	if [[ -f "$config_file" ]]; then
-		# Read the current value of MemoryManager
-		memory_manager_value=$(grep -E '^MemoryManager = (true|false)' "$config_file" | awk '{print $3}')
+
+		# ---- MemoryManager ----
+		memory_manager_value=$(grep -E '^MemoryManager = (true|false)' "$config_file" | head -n 1 | awk '{print $3}')
 
 		if [[ "$memory_manager_value" == "true" ]]; then
-
-			# Change the line to MemoryManager = false
-			sed -i 's/^MemoryManager = true/MemoryManager = false/' "$config_file"
+			sed -i -E 's/^(MemoryManager = )true/\1false/' "$config_file"
 			echo "MemoryManager has been disabled in the 'Buffout 4' config."
-
 		elif [[ "$memory_manager_value" == "false" ]]; then
 			echo "MemoryManager has been disabled in the 'Buffout 4' config."
 		else
 			echo "The MemoryManager setting was not found or is not set to true/false. Please reinstall 'Buffout 4' Mod and run the script again."
-			exit
+			exit 1
 		fi
+
+		# ---- InputSwitch ----
+		input_switch_value=$(grep -E '^InputSwitch = (true|false)' "$config_file" | head -n 1 | awk '{print $3}')
+
+		if [[ "$input_switch_value" == "true" ]]; then
+			sed -i -E 's/^(InputSwitch = )true/\1false/' "$config_file"
+			echo "InputSwitch has been disabled in the 'Buffout 4' config."
+		elif [[ "$input_switch_value" == "false" ]]; then
+			echo "InputSwitch has been disabled in the 'Buffout 4' config."
+		else
+			echo "The InputSwitch setting was not found or is not set to true/false. Please reinstall 'Buffout 4' Mod and run the script again."
+			exit 1
+		fi
+
 	else
-		echo "The MemoryManager setting was not found or is not set to true/false. Please reinstall 'Buffout 4' Mod and run the script again."
-		exit
+		echo "Buffout4 config.toml not found. Please reinstall 'Buffout 4' Mod and run the script again."
+		exit 1
 	fi
 
 	update_progress 17
