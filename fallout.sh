@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 echo "---------------------"
 echo ""
-echo "Fallout London installation script for Steam Deck by krupar"
+echo "Fallout London installation script for Steam Deck by krupar (Rabbit & Pork / 1.03+)"
 echo "Buy me a coffee @ https://ko-fi.com/krupar"
 echo ""
 echo "---------------------"
@@ -872,9 +872,14 @@ if [ "$LAST_STEP" -lt 13 ]; then
 	FOLDER1="$FALLOUT_4_DIR/Data/F4SE/plugins"
 	FOLDER2="$FALLOUT_4_DIR/Data/F4SE/Plugins"
 
-	# Check if the "plugins" folder exists
-	if [ -d "$FOLDER1" ]; then
-		mv "$FOLDER1" "$FOLDER2"
+	# Linux filesystems normally treat "plugins" and "Plugins" as distinct.
+	# Never nest one in the other and risk hiding bundled F4SE components.
+	if [ -d "$FOLDER1" ] && [ -d "$FOLDER2" ]; then
+		echo "ERROR: Both 'plugins' and 'Plugins' directories exist."
+		echo "Please resolve the duplicate directory before running the installer."
+		exit 1
+	elif [ -d "$FOLDER1" ]; then
+		mv "$FOLDER1" "$FOLDER2" || exit 1
 		echo "Folder 'plugins' renamed to 'Plugins'."
 	else
 		if [ ! -d "$FOLDER1" ] && [ ! -d "$FOLDER2" ]; then
@@ -933,142 +938,25 @@ if [ "$LAST_STEP" -lt 15 ]; then
 	update_progress 15
 fi
 
-# Step 16: Ensure Buffout 4 mod is installed. If not help install it.
+# Step 16: Verify bundled 1.03+ stability components, without installing duplicates.
+# Rabbit & Pork includes Buffout 4, High FPS Physics Fix, and X-Cell.
+# Do not download these mods separately or modify the official Buffout config.
 if [ "$LAST_STEP" -lt 16 ]; then
-
-	# Define the path for Buffout Mod files
-	BUFFOUT_FOLDER="$FALLOUT_4_DIR/Data/F4SE/Plugins/Buffout4"
-	BUFFOUT_DLL="$FALLOUT_4_DIR/Data/F4SE/Plugins/Buffout4.dll"
-	BUFFOUT_PRELOAD="$FALLOUT_4_DIR/Data/F4SE/Plugins/Buffout4_preload.txt"
-
-	# Check if the Buffout Mod folder and files exist
-	if [ -d "$BUFFOUT_FOLDER" ] && [ -f "$BUFFOUT_DLL" ] && [ -f "$BUFFOUT_PRELOAD" ]; then
-		all_prerequisites_met=true
-		echo "'Buffout 4' Mod is recognized to be installed."
-	else
-		echo "'Buffout Mod' is not installed. If it's not installed you may experience crashes during the gameplay of Fallout London."
-
-		zenity --info --title="Manual Installation" --width="450" --text="<b>'Buffout 4' mod needs to be installed.</b> \nAs soon as you Accept this message the Nexus page with 'Buffout 4' mod will be opened.\n\n1. Download the mod from nexus.\n2. After downloading switch your focus to the Konsole window.\n3. Drag and drop the downloaded .zip file with the mod onto the konsole window.\n4. Press enter." 2>/dev/null
-
-		xdg-open "https://www.nexusmods.com/fallout4/mods/47359?tab=files" >/dev/null 2>&1 &
-
-		echo ""
-		echo "1. Please download 'Buffout 4' mod from nexus (https://www.nexusmods.com/fallout4/mods/47359?tab=files)"
-		echo "2. Drag and drop the downloaded zip file on this window"
-		echo "3. Click on this window and press enter."
-		echo ""
-		echo "If you don't have a keyboard connected you can press 'STEAM' + 'X' buttons to launch the software keyboard."
-		echo ""
-
-		while true; do
-			# Prompt the user to drop a file and read the input
-			echo ""
-			echo "Drop the 'Buffout 4' zip file here:"
-			read -r dropped_file
-
-			# Remove single quotes from the file path if they exist
-			dropped_file="${dropped_file//\'/}"
-
-			# Check if the input is empty
-			if [[ -z "$dropped_file" ]]; then
-				echo "Error: No file provided. Please drop a file."
-				continue
-			fi
-
-			# Check if the file exists
-			if [[ ! -e "$dropped_file" ]]; then
-				echo "Error: File does not exist. Please drop a valid file."
-				continue
-			fi
-
-			# Check if the file is a .zip file
-			if [[ ! "$dropped_file" =~ \.zip$ ]]; then
-				echo "Error: The file is not a .zip file. Please drop a .zip file."
-				continue
-			fi
-
-			# If all checks pass, break out of the loop
-			echo "The file '$dropped_file' is a valid .zip file."
-			break
-		done
-
-		# Check if the file exists
-		if [ -f "$dropped_file" ]; then
-			echo "File dropped: ${dropped_file}"
-
-			# Define the target directory
-			target_dir="$FALLOUT_4_DIR/Data"
-
-			# Unzip the file to the target directory
-			unzip -o "$dropped_file" -d "$target_dir"
-
-			# Check if the unzip command was successful
-			if [ $? -eq 0 ]; then
-				echo "Successfully unzipped '$dropped_file' to '$target_dir'."
-
-				if [ -d "$BUFFOUT_FOLDER" ] && [ -f "$BUFFOUT_DLL" ] && [ -f "$BUFFOUT_PRELOAD" ]; then
-					all_prerequisites_met=true
-					echo "'Buffout 4' Mod is recognized to be installed."
-				else
-					echo "Error: Failed to install 'Buffout 4' from file '$dropped_file'. Please install it manually or re-run the script and try again."
-					exit 1
-				fi
-			else
-				echo "Error: Failed to install 'Buffout 4' from file '$dropped_file'. Please install it manually or re-run the script and try again."
-				exit 1
-			fi
-		else
-			echo "The dropped file does not exist. Please run the script again."
+	plugins_dir="$FALLOUT_4_DIR/Data/F4SE/Plugins"
+	for dll in Buffout4.dll HighFPSPhysicsFix.dll x-cell-og.dll; do
+		if [ ! -f "$plugins_dir/$dll" ]; then
+			echo "ERROR: Official Fallout London component is missing: $plugins_dir/$dll"
+			echo "Please repair/update Fallout London in Heroic/GOG and rerun the installer."
+			echo "Do NOT download a standalone copy of this mod."
 			exit 1
 		fi
-	fi
-
+	done
+	echo "All three bundled FOLON stability components were found."
 	update_progress 16
 fi
 
-# Step 17: Disable MemoryManager and InputSwitch in 'Buffout 4'.
+# Step 17: Disable Steam Updates for Fallout 4 (Optional Step)
 if [ "$LAST_STEP" -lt 17 ]; then
-
-	config_file="$FALLOUT_4_DIR/Data/F4SE/Plugins/Buffout4/config.toml"
-
-	if [[ -f "$config_file" ]]; then
-
-		# ---- MemoryManager ----
-		memory_manager_value=$(grep -E '^MemoryManager = (true|false)' "$config_file" | head -n 1 | awk '{print $3}')
-
-		if [[ "$memory_manager_value" == "true" ]]; then
-			sed -i -E 's/^(MemoryManager = )true/\1false/' "$config_file"
-			echo "MemoryManager has been disabled in the 'Buffout 4' config."
-		elif [[ "$memory_manager_value" == "false" ]]; then
-			echo "MemoryManager has been disabled in the 'Buffout 4' config."
-		else
-			echo "The MemoryManager setting was not found or is not set to true/false. Please reinstall 'Buffout 4' Mod and run the script again."
-			exit 1
-		fi
-
-		# ---- InputSwitch ----
-		input_switch_value=$(grep -E '^InputSwitch = (true|false)' "$config_file" | head -n 1 | awk '{print $3}')
-
-		if [[ "$input_switch_value" == "true" ]]; then
-			sed -i -E 's/^(InputSwitch = )true/\1false/' "$config_file"
-			echo "InputSwitch has been disabled in the 'Buffout 4' config."
-		elif [[ "$input_switch_value" == "false" ]]; then
-			echo "InputSwitch has been disabled in the 'Buffout 4' config."
-		else
-			echo "The InputSwitch setting was not found or is not set to true/false. Please reinstall 'Buffout 4' Mod and run the script again."
-			exit 1
-		fi
-
-	else
-		echo "Buffout4 config.toml not found. Please reinstall 'Buffout 4' Mod and run the script again."
-		exit 1
-	fi
-
-	update_progress 17
-fi
-
-# Step 18: Disable Steam Updates for Fallout 4 (Optional Step)
-if [ "$LAST_STEP" -lt 18 ]; then
 
 	# Define colors
 	RED='\033[0;31m'
@@ -1156,16 +1044,17 @@ if [ "$LAST_STEP" -lt 18 ]; then
 		fi
 
 	fi
-	update_progress 18
+	update_progress 17
 fi
 
-if [ "$LAST_STEP" -lt 19 ]; then
+# Step 18: Install FAudio for Heroic/GOG when needed.
+if [ "$LAST_STEP" -lt 18 ]; then
 	read_selected_version
 	check_if_fallout_4_is_installed
 
 	FAUDIO_DIR="$HOME/Downloads/faudio"
 	FAudio_Target="$WINEPREFIX/drive_c/windows/system32"
-	# Step 1: Check if the F4_VERSION variable is set to "GOG"
+	# GOG-only FAudio setup
 	if [ "$F4_VERSION" = "GOG" ]; then
 		# Define the path to the Proton prefix
 
@@ -1182,7 +1071,7 @@ if [ "$LAST_STEP" -lt 19 ]; then
 			# Add local bin directory to PATH
 			export WINEPREFIX
 			echo "$WINEPREFIX"
-			# Step 3: Install FAudio using winetricks
+			# Download FAudio binaries for the GOG Proton prefix
 			echo "Installing FAudio"
 
 			#!/bin/bash# Variables
@@ -1215,13 +1104,41 @@ if [ "$LAST_STEP" -lt 19 ]; then
 		fi
 	fi
 
-	update_progress 19
+	update_progress 18
 fi
 
-# Cleanup progress file
+# Step 19: Offer the optional Steam Deck graphics optimization presets.
+# IMPORTANT: Publish optimize_folon_steam_deck.sh and the 3 updated preset ZIPs
+# to the repository's main branch BEFORE distributing this installer.
+if [ "$LAST_STEP" -lt 19 ]; then
+    if zenity --question --title="Optimize Fallout London?" --width=520 \
+        --ok-label="Yes, optimize" --cancel-label="No, finish" \
+        --text="Fallout London installation is complete.\n\nWould you like to apply an optional Steam Deck optimization preset?\n\nThis will start the preset selector (Optimized, Medium, Potato).\nThe official High FPS DLL, Buffout and X-Cell will be preserved."; then
+        echo "Launching Fallout London Steam Deck optimization script..."
+        # Exact optimization entry point requested by the project maintainer.
+        bash <(curl -s https://raw.githubusercontent.com/krupar101/f4london_steam_deck_ini/refs/heads/main/optimize_folon_steam_deck.sh)
+        optimization_rc=$?
+        if [ "$optimization_rc" -ne 0 ]; then
+            echo "WARNING: Optimization exited with code $optimization_rc."
+            echo "The game installation is complete; optimization can be retried separately."
+            zenity --warning --title="Optimization not completed" --width=520 \
+                --text="Fallout London installed, but the optimization script returned code $optimization_rc. You may run it separately." 2>/dev/null || true
+        fi
+    else
+        echo "Optional optimization skipped. Fallout London installation is complete."
+    fi
+
+    # The base installation is complete whether optimization ran or was skipped.
+    # If the optimizer fails, users can rerun it separately.
+    update_progress 19
+fi
+
+# Cleanup progress and version-selection files only after Step 19.
 rm -f "$PROGRESS_FILE"
 rm -f "$F4_VERSION_SELECTION_FILE"
-rm -rf "$FAUDIO_DIR"
+if [ -n "${FAUDIO_DIR:-}" ]; then
+    rm -rf -- "$FAUDIO_DIR"
+fi
 
 if [ "$F4_VERSION" == "STEAM" ]; then
 	text="<b>All steps completed successfully!</b>\n\nYou can now close the terminal / Konsole.\nFallout London can be launched from Fallout 4 Steam page."
